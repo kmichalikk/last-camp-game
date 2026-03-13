@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://fiegi28l5lg5"]
+
+[ext_resource type="PackedScene" uid="uid://dk0hd4uiadqv" path="res://rock_tile.tscn" id="1_2i66t"]
+
+[node name="Node3D" type="Node3D" unique_id=843225948]
+
+[node name="R1" parent="." unique_id=1579620248 instance=ExtResource("1_2i66t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="R2" parent="." unique_id=764240241 instance=ExtResource("1_2i66t")]
+
+[node name="R3" parent="." unique_id=806138385 instance=ExtResource("1_2i66t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="R4" parent="." unique_id=118034669 instance=ExtResource("1_2i66t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
+
+[node name="R5" parent="." unique_id=2125885035 instance=ExtResource("1_2i66t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, -1)
+
+[node name="R6" parent="." unique_id=1137479303 instance=ExtResource("1_2i66t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
