@@ -11,6 +11,8 @@ albedo_color = Color(0.4236506, 0.42365065, 0.42365053, 1)
 transparency = 1
 albedo_color = Color(0, 0.71, 0.18933332, 0.3137255)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_vd7qx"]
+
 [node name="StaticBody3D" type="StaticBody3D" unique_id=1126518158]
 script = ExtResource("1_vd7qx")
 
@@ -25,3 +27,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50439453, 0)
 visible = false
 size = Vector3(1, 0.0087890625, 1)
 material = SubResource("StandardMaterial3D_vd7qx")
+
+[node name="TopOccupancyZone" type="Area3D" parent="." unique_id=297014222]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0.9, 0)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TopOccupancyZone" unique_id=1102268408]
+shape = SubResource("BoxShape3D_vd7qx")
