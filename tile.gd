@@ -25,7 +25,9 @@ func _mouse_exit() -> void:
 func _input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if any_input_event is InputEventMouse:
 		if any_input_event is InputEventMouseButton and GameState.target_player and GameState.can_player_move_to_tile(GameState.target_player, self):
-			GameState.target_player.position = self.global_position + Vector3(0, 1, 0)
+			GameState.target_player.stand_on(self)
+			if get_viewport():
+				get_viewport().set_input_as_handled()
 
 func _on_selection_changed(new_player: Player):
 	if new_player != null:
