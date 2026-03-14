@@ -21,6 +21,7 @@ albedo_color = Color(0.28627452, 0.5568628, 1, 0.3137255)
 
 [node name="Player" type="AnimatableBody3D" unique_id=1513608525]
 collision_layer = 2
+collision_mask = 4
 script = ExtResource("1_4flbx")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=746465049]
@@ -30,10 +31,11 @@ shape = SubResource("CylinderShape3D_4flbx")
 material_override = SubResource("StandardMaterial3D_4flbx")
 
 [node name="GroundRay" type="RayCast3D" parent="." unique_id=1316400438]
-target_position = Vector3(0, -1.1, 0)
+collision_mask = 6
 
 [node name="PlayerStackHighlight" type="Area3D" parent="." unique_id=1685351934]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.504, 0)
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerStackHighlight" unique_id=121588866]
 shape = SubResource("CylinderShape3D_onrkg")

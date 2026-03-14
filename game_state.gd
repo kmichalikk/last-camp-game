@@ -33,5 +33,5 @@ func can_player_move_to_tile(player: Player, tile: RockTile):
 	
 	return true
 	
-func can_player_stack_onto_player(stacked_player: Player, base_player: Player):
-	return stacked_player != base_player
+func can_player_stack_onto_player(stacking_player: Player, base_player: Player):
+	return stacking_player != base_player

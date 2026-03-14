@@ -14,6 +14,8 @@ albedo_color = Color(0, 0.71, 0.18933332, 0.3137255)
 [sub_resource type="BoxShape3D" id="BoxShape3D_vd7qx"]
 
 [node name="StaticBody3D" type="StaticBody3D" unique_id=1126518158]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("1_vd7qx")
 
 [node name="TileGeom" type="CSGBox3D" parent="." unique_id=398774094]
