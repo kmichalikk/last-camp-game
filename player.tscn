@@ -4,8 +4,8 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_onrkg"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqk2v"]
-albedo_color = Color(0.28611368, 0.55876154, 1, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
+albedo_color = Color(0.28627452, 0.5568628, 1, 1)
 
 [node name="Player" type="AnimatableBody3D" unique_id=1513608525]
 script = ExtResource("1_4flbx")
@@ -14,4 +14,4 @@ script = ExtResource("1_4flbx")
 shape = SubResource("SphereShape3D_onrkg")
 
 [node name="PlayerCSG" type="CSGSphere3D" parent="." unique_id=848169133]
-material_override = SubResource("StandardMaterial3D_aqk2v")
+material_override = SubResource("StandardMaterial3D_4flbx")
