@@ -1,11 +1,14 @@
 [gd_scene format=3 uid="uid://ddawamlyv4wii"]
 
+[ext_resource type="Script" uid="uid://creobtyyr8eyd" path="res://player.gd" id="1_4flbx"]
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_onrkg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqk2v"]
 albedo_color = Color(0.28611368, 0.55876154, 1, 1)
 
 [node name="Player" type="AnimatableBody3D" unique_id=1513608525]
+script = ExtResource("1_4flbx")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=746465049]
 shape = SubResource("SphereShape3D_onrkg")
