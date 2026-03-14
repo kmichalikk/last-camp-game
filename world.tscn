@@ -2,8 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://ddawamlyv4wii" path="res://player.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://creobtyyr8eyd" path="res://player.gd" id="2_fj7yv"]
-[ext_resource type="Script" uid="uid://cucuwxuaqjno1" path="res://floor.gd" id="3_tlwt5"]
-[ext_resource type="Script" uid="uid://bqvv5t5kfxhod" path="res://mouse_marker.gd" id="4_036b0"]
+[ext_resource type="PackedScene" uid="uid://cvx2ghg0lj2pl" path="res://rocks_1.tscn" id="4_036b0"]
+[ext_resource type="Script" uid="uid://cq2l18duq1drb" path="res://game_state.gd" id="4_aqk2v"]
+[ext_resource type="PackedScene" uid="uid://fiegi28l5lg5" path="res://rocks_2.tscn" id="4_dwbse"]
+[ext_resource type="PackedScene" uid="uid://cnjcp87hhjkj6" path="res://rocks_3.tscn" id="6_pkg7o"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -18,16 +20,11 @@ sky = SubResource("Sky_tlwt5")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tlwt5"]
-albedo_color = Color(0.52403694, 0.6273565, 1.347661e-06, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_036b0"]
-albedo_color = Color(0.44, 0.44, 0.44, 1)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_tlwt5"]
-size = Vector3(10, 1, 10)
-
 [node name="World" type="Node3D" unique_id=1052961586]
+
+[node name="GameState" type="Node" parent="." unique_id=628028775]
+unique_name_in_owner = true
+script = ExtResource("4_aqk2v")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1602670462]
 environment = SubResource("Environment_aqk2v")
@@ -37,27 +34,41 @@ transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1800993504]
-transform = Transform3D(1, 0, 0, 0, 0.9659259, 0.25881907, 0, -0.25881907, 0.9659258, 0, 4.5712156, 7.1270466)
-
-[node name="MouseMarker" type="CSGBox3D" parent="." unique_id=624873447]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.513916, -0.0625)
-size = Vector3(0.40844727, 0.027832031, 0.40600586)
-material = SubResource("StandardMaterial3D_tlwt5")
-script = ExtResource("4_036b0")
-
-[node name="Floor" type="AnimatableBody3D" parent="." unique_id=1658820229]
-script = ExtResource("3_tlwt5")
-
-[node name="FloorCSG" type="CSGBox3D" parent="Floor" unique_id=262266747]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, -1.5)
-material_override = SubResource("StandardMaterial3D_036b0")
-size = Vector3(10, 1, 10)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=642532336]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, -1.5)
-shape = SubResource("BoxShape3D_tlwt5")
+transform = Transform3D(0.9402684, -0.21054728, 0.2675167, 0, 0.78581065, 0.6184672, -0.34043404, -0.58152515, 0.7388729, 2.5063229, 6.1238127, 5.5275164)
 
 [node name="Player" parent="." unique_id=1513608525 instance=ExtResource("1_f3sb7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 script = ExtResource("2_fj7yv")
+
+[node name="Node3D" parent="." unique_id=1392079987 instance=ExtResource("4_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Node3D7" parent="." unique_id=1206985745 instance=ExtResource("4_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1)
+
+[node name="Node3D2" parent="." unique_id=1998712891 instance=ExtResource("4_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -1)
+
+[node name="Node3D3" parent="." unique_id=843225948 instance=ExtResource("4_dwbse")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+
+[node name="Node3D4" parent="." unique_id=1655829038 instance=ExtResource("4_dwbse")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -1)
+
+[node name="Node3D10" parent="." unique_id=1570659615 instance=ExtResource("6_pkg7o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 1)
+
+[node name="Node3D11" parent="." unique_id=126569336 instance=ExtResource("6_pkg7o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -3)
+
+[node name="Node3D12" parent="." unique_id=365436134 instance=ExtResource("6_pkg7o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -4)
+
+[node name="Node3D5" parent="." unique_id=1372776134 instance=ExtResource("4_dwbse")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, -3)
+
+[node name="Node3D6" parent="." unique_id=1718068357 instance=ExtResource("4_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, -4)
+
+[node name="Node3D8" parent="." unique_id=2034519563 instance=ExtResource("4_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2, -1)
