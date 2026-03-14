@@ -2,9 +2,9 @@ extends AnimatableBody3D
 
 class_name Player
 
-@export var player_color: Color = "498eff"
-
 @onready var material: StandardMaterial3D = $PlayerCSG.material_override
+
+@export var player_color: Color = "498eff"
 
 func _ready() -> void:
 	material.albedo_color = player_color

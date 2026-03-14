@@ -2,12 +2,15 @@ extends StaticBody3D
 
 @onready var tile_geom: CSGBox3D = $TileGeom
 @onready var tile_stand_highlight: CSGBox3D = $TileStandHighlight
+@onready var material: StandardMaterial3D = $TileStandHighlight.material
 
 @export var player_can_stand_on: bool = true
 
 
 func _mouse_enter() -> void:
 	if GameState.target_player != null and player_can_stand_on:
+		var target_color = GameState.target_player.player_color
+		material.albedo_color = Color(target_color.r, target_color.g, target_color.b, material.albedo_color.a)
 		tile_stand_highlight.visible = true
 
 
