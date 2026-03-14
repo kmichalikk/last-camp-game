@@ -19,16 +19,14 @@ func _mouse_enter() -> void:
 	if GameState.target_player != null and GameState.can_player_move_to_tile(GameState.target_player, self):
 		tile_stand_highlight.visible = true
 
-
 func _mouse_exit() -> void:
 	tile_stand_highlight.visible = false
-		
-		
+
 func _input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if any_input_event is InputEventMouse:
 		if any_input_event is InputEventMouseButton and GameState.target_player and GameState.can_player_move_to_tile(GameState.target_player, self):
 			GameState.target_player.position = self.global_position + Vector3(0, 1, 0)
-			
+
 func _on_selection_changed(new_player: Player):
 	if new_player != null:
 		var target_color = GameState.target_player.player_color

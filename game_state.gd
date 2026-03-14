@@ -21,11 +21,11 @@ func _deselect_player():
 	
 	target_player = null
 	selection_changed.emit(null)
-	
+
 func can_player_move_to_tile(player: Player, tile: RockTile):
 	if not tile.player_can_stand_on:
 		return false
-	
+
 	if tile.has_standing_player():
 		return false
 		
