@@ -18,9 +18,12 @@ radius = 0.4
 transparency = 1
 albedo_color = Color(0.28627452, 0.5568628, 1, 0.3137255)
 
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4flbx"]
+
 [node name="Player" type="AnimatableBody3D" unique_id=1513608525]
 collision_layer = 2
 collision_mask = 4
+sync_to_physics = false
 script = ExtResource("1_4flbx")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=746465049]
@@ -44,3 +47,11 @@ visible = false
 material_override = SubResource("StandardMaterial3D_onrkg")
 radius = 0.4
 height = 0.009
+
+[node name="GrabIndicator" type="Sprite3D" parent="." unique_id=705586728]
+top_level = true
+visible = false
+pixel_size = 0.4076
+billboard = 1
+no_depth_test = true
+texture = SubResource("PlaceholderTexture2D_4flbx")

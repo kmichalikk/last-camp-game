@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://bbneoim5jkfll"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f5yop"]
+transparency = 1
+albedo_color = Color(0, 0.71, 0.18933332, 0.3137255)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_66f65"]
+
+[node name="BlockTriggers" type="Node3D" unique_id=943259389]
+
+[node name="Grab+ZHighlight" type="CSGBox3D" parent="." unique_id=1956269548]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.504)
+visible = false
+size = Vector3(1, 0.0087890625, 1)
+material = SubResource("StandardMaterial3D_f5yop")
+
+[node name="Grab+XHighlight" type="CSGBox3D" parent="." unique_id=1347542814]
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, 0.504, 0, 0)
+visible = false
+size = Vector3(1, 0.0087890625, 1)
+material = SubResource("StandardMaterial3D_f5yop")
+
+[node name="Grab-XHighlight" type="CSGBox3D" parent="." unique_id=2026004839]
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, -0.504, 0, 0)
+visible = false
+size = Vector3(1, 0.0087890625, 1)
+material = SubResource("StandardMaterial3D_f5yop")
+
+[node name="Grab-ZHighlight" type="CSGBox3D" parent="." unique_id=728111088]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, -0.504)
+visible = false
+size = Vector3(1, 0.0087890625, 1)
+material = SubResource("StandardMaterial3D_f5yop")
+
+[node name="TileStandHighlight" type="CSGBox3D" parent="." unique_id=255550579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50439453, 0)
+visible = false
+size = Vector3(1, 0.0087890625, 1)
+material = SubResource("StandardMaterial3D_f5yop")
+
+[node name="TopOccupancyZone" type="Area3D" parent="." unique_id=1198229783]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0.9, 0)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TopOccupancyZone" unique_id=982573564]
+shape = SubResource("BoxShape3D_66f65")
