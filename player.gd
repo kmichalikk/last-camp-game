@@ -55,4 +55,7 @@ func _on_player_stack_highlight_input_event(camera: Node, event: InputEvent, eve
 			stacking_player.stand_on(self)
 			if get_viewport():
 				get_viewport().set_input_as_handled()
-			
+			return
+	
+	# Fallback to regular input event
+	_input_event(camera, event, event_position, normal, 0)
