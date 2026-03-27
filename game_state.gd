@@ -22,7 +22,6 @@ func _deselect_player():
 	target_player = null
 	selection_changed.emit(null)
 
-
 func _target_is_reachable(player: Player, target: Node3D):
 	"""
 	checks if the target tile is reachable by the player;
@@ -51,9 +50,8 @@ func _target_is_reachable(player: Player, target: Node3D):
 		
 	return abs_distance_to_target.x <= 1 and abs_distance_to_target.z <= 1
 
-
-func can_player_move_to_tile(player: Player, tile: RockTile):
-	if not tile.player_can_stand_on:
+func can_player_move_to_tile(player: Player, tile: RockBase):
+	if not tile.can_stand or player.is_grabbing:
 		return false
 
 	if tile.has_standing_player():
@@ -63,6 +61,10 @@ func can_player_move_to_tile(player: Player, tile: RockTile):
 		return false
 	
 	return true
+	
+func can_player_grab_tile(player: Player, tile: RockBase, normal: Vector3):
+	var distance = tile.global_position + normal - player.global_position
+	return is_equal_approx(distance.x, 0) and is_equal_approx(distance.y, 0) and is_equal_approx(distance.z, 0)
 	
 func can_player_stack_onto_player(stacking_player: Player, base_player: Player):
 	return stacking_player != base_player and _target_is_reachable(stacking_player, base_player)
