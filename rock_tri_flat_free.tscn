@@ -8,6 +8,7 @@
 
 [node name="rock1" type="StaticBody3D" parent="." unique_id=1822769914]
 collision_layer = 4
+collision_mask = 4
 script = ExtResource("2_vgcw0")
 can_stand = true
 can_grab_south = true
@@ -19,6 +20,7 @@ transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 [node name="rock2" type="StaticBody3D" parent="." unique_id=1082324567]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 collision_layer = 4
+collision_mask = 4
 script = ExtResource("2_vgcw0")
 can_stand = true
 can_grab_north = true
@@ -31,6 +33,7 @@ transform = Transform3D(-2.1855694e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.1855694e-
 [node name="rock3" type="StaticBody3D" parent="." unique_id=2144720268]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 collision_layer = 4
+collision_mask = 4
 script = ExtResource("2_vgcw0")
 can_stand = true
 can_grab_north = true

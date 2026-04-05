@@ -1,4 +1,4 @@
-extends AnimatableBody3D
+extends RigidBody3D
 
 class_name Player
 
@@ -7,115 +7,93 @@ class_name Player
 @onready var stack_highlight: Area3D = $PlayerStackHighlight
 @onready var stack_hightlight_csg: CSGCylinder3D = $PlayerStackHighlight/PlayerStackHighlightCSG
 @onready var stack_highlight_material: StandardMaterial3D = $PlayerStackHighlight/PlayerStackHighlightCSG.material_override
-@onready var ground_ray: RayCast3D = $GroundRay
 @onready var grab_indicator: Sprite3D = $GrabIndicator
+@onready var snap_to_floor_detector: Area3D = $SnapToFloorDetector
+@onready var player_has_space_detector: ShapeCast3D = $PlayerHasSpaceDetector
 
 @export var player_color: Color = "498eff"
+@export var attached_ropes: Array[Rope]
+
+var player_above: Player = null
+var player_below: Player = null
 
 var is_grabbing: bool = false
+var is_fixed: bool = false
 
 func _ready() -> void:
 	material.albedo_color = player_color
 	material.emission = player_color
 	material.emission_enabled = false
 
+	snap_to_floor_detector.connect("body_entered", _snap_to_floor_triggered)
+
 	GameState.selection_changed.connect(_on_selection_changed)
 	stack_highlight.mouse_entered.connect(_on_player_stack_highlight_mouse_entered)
 	stack_highlight.mouse_exited.connect(_on_player_stack_highlight_mouse_exited)
 	stack_highlight.input_event.connect(_on_player_stack_highlight_input_event)
 
-	call_deferred("_do_initial_placement")
-	
 func _process(delta: float) -> void:
 	grab_indicator.position = self.global_position
 
-func _do_initial_placement() -> void:
-	# Epic trick to attach player to the tile based on position in editor
-	if get_parent() == get_tree().current_scene:
-		ground_ray.force_raycast_update()
-		if ground_ray.is_colliding():
-			stand_on(ground_ray.get_collider())
+func _physics_process(delta: float) -> void:
+	# reset rotation so the player is always upright
+	transform.basis = Basis()
 
-func stand_on(new_parent: Node3D):
-	if is_grabbing:
+func _snap_to_floor_triggered(body: Node3D) -> void:
+	if is_fixed or body == self:
 		return
 
-	if get_parent() != new_parent:
-		var blocked_player = _find_lowest_blocked_player_in_stack(new_parent)
+	_snap_to_floor_if_possible(body)
 
-		if blocked_player != null:
-			blocked_player._drop_in_place()
-		
-		reparent(new_parent, false)
-		position = Vector3.UP
+func _snap_to_floor_if_possible(body: Node3D) -> bool:
+	if ((body is RockBase and body.can_stand) or body is Player) and body.global_position.distance_squared_to(self.global_position) < 1.3:
+		print('snapped to floor')
+		stand_on(body)
+		return true
+	return false
 
-func _find_lowest_blocked_player_in_stack(new_parent: Node3D) -> Player:
-	var target_global_pos = new_parent.global_position + Vector3.UP
-	var step_offset = target_global_pos - self.global_position
+func stand_on(target: Node3D):
+	if is_grabbing:
+		return
+	if (target is Player):
+		target.player_above = self
+		player_below = target
+	else:
+		player_below = null
+	global_position = target.global_position + Vector3.UP
+	if (player_above != null):
+		if (!player_above.is_grabbing and GameState.can_player_stack_onto_player(player_above, self)):
+			player_above.stand_on(self)
+		else:
+			detach_player_above()
+	freeze = true
+	is_fixed = true
 
-	var space_state = get_world_3d().direct_space_state
-	var current_child = _get_child_player()
+func detach_player_above():
+	if (player_above == null):
+		return
+	if (!player_above.is_grabbing):
+		player_above.freeze = false
+		player_above.is_fixed = false
+		player_above.detach_player_above()
+	player_above.player_below = null
+	player_above = null
 
-	while current_child != null:
-		var child_target_pos = current_child.global_position + step_offset
-
-		var query = PhysicsShapeQueryParameters3D.new()
-		var shape = SphereShape3D.new()
-		shape.radius = 0.4
-		query.shape = shape
-		query.transform = Transform3D(Basis(), child_target_pos)
-		query.collision_mask = 4
-
-		var results = space_state.intersect_shape(query)
-		if not results.is_empty():
-			return current_child
-
-		current_child = current_child._get_child_player()
-
-	return null
-
-func _drop_in_place():
-	var space_state = get_world_3d().direct_space_state
-	# Cast from slightly above to ensure we don't catch inside the current floor
-	var query = PhysicsRayQueryParameters3D.create(global_position + (Vector3.UP * 0.1), global_position + (Vector3.DOWN * 50.0), 6)
-
-	var excludes = []
-
-	# Exclude self and all children from the ray
-	var p = self
-	while p != null:
-		excludes.append(p.get_rid())
-		p = p._get_child_player()
-
-	# Exclude all moving ancestors beneath us because they are about to leave, we want to hit the Tile they are standing on.
-	var ancestor = get_parent()
-	while ancestor != null and ancestor is Player:
-		excludes.append(ancestor.get_rid())
-		ancestor = ancestor.get_parent()
-
-	query.exclude = excludes
-
-	var result = space_state.intersect_ray(query)
-	if result and result.collider is Node3D:
-		reparent(result.collider, false)
-		position = Vector3.UP
-
-func _get_child_player() -> Player:
-	for child in get_children():
-		if child is Player:
-			return child
-	return null
-
-func grab(new_parent: Node3D, normal: Vector3):
-	if get_parent() != new_parent:
-		reparent(new_parent)
-		is_grabbing = true
-		grab_indicator.visible = true
-	else: # let go, reparent to world
-		reparent(get_tree().current_scene, true)
-		is_grabbing = false
+func grab(block: Node3D, normal: Vector3) -> void:
+	if is_grabbing:
 		grab_indicator.visible = false
-		_drop_in_place()
+		is_grabbing = false
+		is_fixed = false
+		freeze = false
+		for body in snap_to_floor_detector.get_overlapping_bodies():
+			if _snap_to_floor_if_possible(body):
+				return
+	else:
+		grab_indicator.visible = true
+		global_position = block.global_position + normal
+		is_grabbing = true
+		is_fixed = true
+		freeze = true
 
 
 func _input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
