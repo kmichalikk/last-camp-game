@@ -1,10 +1,13 @@
 extends Node
 
 signal selection_changed(new_player: Player)
+signal game_over()
 
 const PLAYER_SNAP_TO_FLOOR_DISTANCE = 1.3
+const ROPE_ALLOWED_STRETCH = 1.5
 
 var target_player: Player = null
+var is_game_over = false
 
 func toggle_selection(player: Player):
 	if target_player == player:
@@ -23,6 +26,11 @@ func _deselect_player():
 
 	target_player = null
 	selection_changed.emit(null)
+	
+func rope_broken(rope: Rope):
+	print('Rope broke, game over')
+	emit_signal("game_over")
+	is_game_over = true
 
 func _target_is_reachable(player: Player, target: Node3D):
 	"""
