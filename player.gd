@@ -46,8 +46,8 @@ func _snap_to_floor_triggered(body: Node3D) -> void:
 	_snap_to_floor_if_possible(body)
 
 func _snap_to_floor_if_possible(body: Node3D) -> bool:
-	if ((body is RockBase and body.can_stand) or body is Player) and body.global_position.distance_squared_to(self.global_position) < 1.3:
-		print('snapped to floor')
+	if ((body is RockBase and body.can_stand) or body is Player) \
+	and body.global_position.distance_squared_to(self.global_position) < GameState.PLAYER_SNAP_TO_FLOOR_DISTANCE:
 		stand_on(body)
 		return true
 	return false

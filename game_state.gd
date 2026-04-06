@@ -2,6 +2,8 @@ extends Node
 
 signal selection_changed(new_player: Player)
 
+const PLAYER_SNAP_TO_FLOOR_DISTANCE = 1.3
+
 var target_player: Player = null
 
 func toggle_selection(player: Player):
