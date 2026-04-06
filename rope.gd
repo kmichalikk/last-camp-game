@@ -23,6 +23,7 @@ var central_joint: Generic6DOFJoint3D
 var broken: bool = false
 
 func _init(joint_position: Array[Vector3] = [], segment_distance: Vector3 = Vector3.ZERO) -> void:
+	add_to_group("history")
 	self.joint_positions = joint_positions
 	self.segment_distance = segment_distance
 	
@@ -41,6 +42,8 @@ func _ready() -> void:
 	_make_rope.call_deferred(player_a_ref, player_b_ref, joint_positions)
 
 func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_positions: Array[Vector3]):
+	global_position = Vector3.ZERO
+	
 	var segments_positions = []
 	var segments_directions = []
 	var joints = []
@@ -151,10 +154,23 @@ func real_length() -> float:
 	return total
 
 func get_joint_points() -> Array[Vector3]:
-	var joint_points = []
-	for i in range(0, strain_points.size(), 2):
-		if (i == 0 || i + 1 == strain_points.size()):
-			joint_points.push_back(strain_points[i].global_position)
-		else:
-			joint_points.push_back((strain_points[i-1].global_position + strain_points[i].global_position) / 2)
+	var joint_points: Array[Vector3] = []
+	joint_points.push_back(strain_points[0].global_position)
+	for i in range(2, strain_points.size()-1, 2):
+		joint_points.push_back((strain_points[i-1].global_position + strain_points[i].global_position) / 2)
+	joint_points.push_back(strain_points[-1].global_position)
 	return joint_points
+
+func snapshot() -> Variant:
+	return {
+		"joint_positions": get_joint_points(),
+	}
+
+func restore_from_snapshot(data: Variant):
+	joint_positions = data.joint_positions
+	broken = false
+	time_under_strain = 0
+	strain_points.clear()
+	for child in get_children():
+		child.free()
+	_make_rope(player_a_ref, player_b_ref, joint_positions)

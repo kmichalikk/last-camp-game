@@ -1,5 +1,6 @@
 extends Node
 
+
 signal selection_changed(new_player: Player)
 signal game_over()
 
@@ -8,6 +9,9 @@ const ROPE_ALLOWED_STRETCH = 1.5
 
 var target_player: Player = null
 var is_game_over = false
+
+func _init() -> void:
+	add_to_group("history")
 
 func toggle_selection(player: Player):
 	if target_player == player:
@@ -83,3 +87,13 @@ func can_player_grab_tile(player: Player, tile: RockBase, normal: Vector3):
 
 func can_player_stack_onto_player(stacking_player: Player, base_player: Player):
 	return stacking_player != base_player and _target_is_reachable(stacking_player, base_player)
+
+func snapshot() -> Variant:
+	return {
+		"target_player": target_player,
+		"is_game_over": is_game_over
+	}
+	
+func restore_from_snapshot(data: Variant):
+	is_game_over = data.is_game_over
+	_select_player(data.target_player)
