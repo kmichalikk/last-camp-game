@@ -5,6 +5,7 @@
 
 [node name="rock_111111" type="StaticBody3D" unique_id=1859325922]
 collision_layer = 4
+collision_mask = 0
 script = ExtResource("1_i4mbs")
 
 [node name="rock_111111" parent="." unique_id=1744827880 instance=ExtResource("2_03nsa")]

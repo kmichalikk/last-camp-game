@@ -6,7 +6,7 @@ class_name RockBase
 @export var can_grab_north: bool = false
 @export var can_grab_south: bool = false
 @export var can_grab_west: bool = false
-@export var can_grab_east: bool = false 
+@export var can_grab_east: bool = false
 
 var tile_stand_highlight: MeshInstance3D = null
 var tile_grab_north_highlight: MeshInstance3D = null
@@ -33,7 +33,7 @@ func _ready() -> void:
 		_setup_grab_action(Vector3(1, 1, 0.004), Vector3(0, 0, 0.502), &"tile_grab_east_highlight", Vector3(0, 0, 1))
 	if can_grab_west:
 		_setup_grab_action(Vector3(1, 1, 0.004), Vector3(0, 0, -0.502), &"tile_grab_west_highlight", Vector3(0, 0, -1))
-		
+
 #region Stand action
 
 func _setup_stand_colliders():
@@ -45,7 +45,7 @@ func _setup_stand_colliders():
 	tile_stand_area.mouse_exited.connect(Callable(self, &"_stand_mouse_exit"))
 	tile_stand_area.input_event.connect(Callable(self, &"_stand_input_event"))
 	add_child(tile_stand_area)
-	
+
 	top_occupancy_zone = Area3D.new()
 	top_occupancy_zone.collision_mask = 2
 	top_occupancy_zone.input_ray_pickable = false
@@ -66,7 +66,7 @@ func _stand_mouse_enter() -> void:
 
 func _stand_mouse_exit() -> void:
 	tile_stand_highlight.visible = false
-	
+
 #endregion
 
 #region Grab action
@@ -96,7 +96,7 @@ func _make_grab_mouse_enter(target_mesh_var: StringName, normal: Vector3) -> Cal
 func _make_grab_mouse_exit(target_mesh_var: StringName) -> Callable:
 	return func():
 		self[target_mesh_var].visible = false
-	
+
 #endregion
 
 func _create_helper_mesh_instance(size: Vector3, position: Vector3) -> MeshInstance3D:
@@ -107,17 +107,17 @@ func _create_helper_mesh_instance(size: Vector3, position: Vector3) -> MeshInsta
 	instance.mesh.material = self.material
 	instance.visible = false
 	return instance
-	
+
 func _create_helper_collision_shape(size: Vector3, position: Vector3) -> CollisionShape3D:
 	var collision_shape = CollisionShape3D.new()
 	collision_shape.shape = BoxShape3D.new()
-	collision_shape.shape.size = size
+	collision_shape.shape.size = size + Vector3(0.05, 0.05, 0.05)
 	collision_shape.position = position
 	return collision_shape
-		
+
 func has_standing_player() -> bool:
 	return can_stand and top_occupancy_zone.has_overlapping_bodies()
-	
+
 func _on_selection_changed(new_player: Player):
 	if new_player != null:
 		var target_color = GameState.target_player.player_color

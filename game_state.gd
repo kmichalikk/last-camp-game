@@ -2,6 +2,8 @@ extends Node
 
 signal selection_changed(new_player: Player)
 
+const PLAYER_SNAP_TO_FLOOR_DISTANCE = 1.3
+
 var target_player: Player = null
 
 func toggle_selection(player: Player):
@@ -12,13 +14,13 @@ func toggle_selection(player: Player):
 
 func _select_player(player: Player):
 	if target_player == player: return
-	
+
 	target_player = player
 	selection_changed.emit(target_player)
 
 func _deselect_player():
 	if target_player == null: return
-	
+
 	target_player = null
 	selection_changed.emit(null)
 
@@ -31,10 +33,15 @@ func _target_is_reachable(player: Player, target: Node3D):
 	var abs_distance_to_target = abs(distance_to_target)
 	if abs_distance_to_target.y > 1:
 		return false
-		
+
 	if abs_distance_to_target.y == 1 and abs_distance_to_target.x + abs_distance_to_target.z > 1:
 		return false
-		
+
+	player.player_has_space_detector.global_position = target.global_position + Vector3.UP
+	player.player_has_space_detector.force_shapecast_update()
+	if (player.player_has_space_detector.is_colliding()):
+		return false
+
 	if abs_distance_to_target.x == 1 and abs_distance_to_target.z == 1:
 		# if the diagonal direction is blocked by a corner tile, we should disallow it
 		# we're testing that with two rays projected perpendicularily
@@ -47,7 +54,7 @@ func _target_is_reachable(player: Player, target: Node3D):
 			PhysicsRayQueryParameters3D.create(player.global_position, player.global_position + ray_direction_two)
 		)
 		return intersections_one.is_empty() and intersections_two.is_empty()
-		
+
 	return abs_distance_to_target.x <= 1 and abs_distance_to_target.z <= 1
 
 func can_player_move_to_tile(player: Player, tile: RockBase):
@@ -56,15 +63,15 @@ func can_player_move_to_tile(player: Player, tile: RockBase):
 
 	if tile.has_standing_player():
 		return false
-		
+
 	if not _target_is_reachable(player, tile):
 		return false
-	
+
 	return true
-	
+
 func can_player_grab_tile(player: Player, tile: RockBase, normal: Vector3):
 	var distance = tile.global_position + normal - player.global_position
-	return is_equal_approx(distance.x, 0) and is_equal_approx(distance.y, 0) and is_equal_approx(distance.z, 0)
-	
+	return distance.length() < 0.4
+
 func can_player_stack_onto_player(stacking_player: Player, base_player: Player):
 	return stacking_player != base_player and _target_is_reachable(stacking_player, base_player)
