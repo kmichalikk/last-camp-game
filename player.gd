@@ -27,6 +27,7 @@ func _ready() -> void:
 
 	snap_to_floor_detector.connect("body_entered", _snap_to_floor_triggered)
 
+	GameState.game_over.connect(_on_game_over)
 	GameState.selection_changed.connect(_on_selection_changed)
 	stack_highlight.mouse_entered.connect(_on_player_stack_highlight_mouse_entered)
 	stack_highlight.mouse_exited.connect(_on_player_stack_highlight_mouse_exited)
@@ -40,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	transform.basis = Basis()
 
 func _snap_to_floor_triggered(body: Node3D) -> void:
-	if is_fixed or body == self:
+	if is_fixed or body == self or GameState.is_game_over:
 		return
 
 	_snap_to_floor_if_possible(body)
@@ -124,3 +125,8 @@ func _on_player_stack_highlight_input_event(camera: Node, event: InputEvent, eve
 
 	# Fallback to regular input event
 	_input_event(camera, event, event_position, normal, 0)
+
+func _on_game_over():
+	is_grabbing = false
+	is_fixed = false
+	freeze = false

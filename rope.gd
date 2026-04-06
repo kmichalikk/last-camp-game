@@ -2,6 +2,8 @@ extends Node3D
 
 class_name Rope
 
+signal rope_broken()
+
 @export var player_a_ref: RigidBody3D
 @export var player_b_ref: RigidBody3D
 
@@ -14,6 +16,11 @@ var strain_points: Array[Node3D]
 
 var joint_positions: Array[Vector3]
 
+# rope breaking logic
+var expected_total_length: float
+var time_under_strain: float = 0
+var central_joint: Generic6DOFJoint3D
+var broken: bool = false
 
 func _init(joint_position: Array[Vector3] = [], segment_distance: Vector3 = Vector3.ZERO) -> void:
 	self.joint_positions = joint_positions
@@ -29,6 +36,7 @@ func _ready() -> void:
 		segment_distance = players_distance / num_segments
 		for i in range(num_segments+1):
 			joint_positions.push_back(player_a_ref.global_position + i * segment_distance)
+		expected_total_length = players_distance.length()
 	
 	_make_rope.call_deferred(player_a_ref, player_b_ref, joint_positions)
 
@@ -65,6 +73,8 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 		else:
 			joint.node_a = segments[i-1].get_path()
 			joint.node_b = segments[i].get_path()
+		if (i == joint_positions.size() / 2):
+			central_joint = joint
 		add_child(joint)
 
 func _make_alignment_basis(direction: Vector3) -> Basis:
@@ -116,11 +126,21 @@ func _append_strain_points(target: RigidBody3D, position1: Vector3, position2: V
 	strain_points.push_back(sp2)
 
 func _process(delta: float) -> void:
-	for i in range(1, strain_points.size() - 1, 2):
-		if strain_points[i].global_position.distance_to(strain_points[i+1].global_position) > 0.2:
-			material.albedo_color = Color('red')
-		else:
-			material.albedo_color = Color('orange')
+	var length = real_length()
+	if (length > expected_total_length + GameState.ROPE_ALLOWED_STRETCH):
+		material.albedo_color = Color('red')
+		time_under_strain += delta
+		if (time_under_strain > 2):
+			_break_rope()
+	else:
+		time_under_strain = 0
+		material.albedo_color = Color('orange')
+
+func _break_rope() -> void:
+	if (!broken):
+		GameState.rope_broken(self)
+		central_joint.queue_free()
+		broken = true
 
 func real_length() -> float:
 	var total = 0.0
