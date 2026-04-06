@@ -127,7 +127,7 @@ func _append_strain_points(target: RigidBody3D, position1: Vector3, position2: V
 
 func _process(delta: float) -> void:
 	var length = real_length()
-	if (length > expected_total_length + 1.5):
+	if (length > expected_total_length + GameState.ROPE_ALLOWED_STRETCH):
 		material.albedo_color = Color('red')
 		time_under_strain += delta
 		if (time_under_strain > 2):

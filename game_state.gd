@@ -4,6 +4,7 @@ signal selection_changed(new_player: Player)
 signal game_over()
 
 const PLAYER_SNAP_TO_FLOOR_DISTANCE = 1.3
+const ROPE_ALLOWED_STRETCH = 1.5
 
 var target_player: Player = null
 var is_game_over = false
