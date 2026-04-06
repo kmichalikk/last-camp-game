@@ -99,19 +99,23 @@ light_energy = 7.518
 light_size = 0.148
 omni_range = 587.861
 
+[node name="BluePlayer" parent="." unique_id=1513608525 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+attached_ropes = [NodePath("../RopeBlueYellow"), NodePath("../RopeBlueMagenta")]
+
 [node name="YellowPlayer" parent="." unique_id=1424847384 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
 player_color = Color(0.8681055, 0.85430175, 0, 1)
 attached_ropes = [NodePath("../RopeBlueYellow")]
 
-[node name="RopeBlueYellow" parent="." unique_id=1995825324 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
-player_a_ref = NodePath("../BluePlayer")
-player_b_ref = NodePath("../YellowPlayer")
-
 [node name="MagentaPlayer" parent="." unique_id=1502662344 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
 player_color = Color(1, 0.36719185, 0.5659509, 1)
 attached_ropes = [NodePath("../RopeBlueMagenta")]
+
+[node name="RopeBlueYellow" parent="." unique_id=1995825324 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
+player_a_ref = NodePath("../BluePlayer")
+player_b_ref = NodePath("../YellowPlayer")
 
 [node name="RopeBlueMagenta" parent="." unique_id=1453056359 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
 player_a_ref = NodePath("../BluePlayer")
