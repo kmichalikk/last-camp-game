@@ -15,11 +15,11 @@ var material: StandardMaterial3D
 var strain_points: Array[Node3D]
 
 var joint_positions: Array[Vector3]
+var joint_rids: Array[RID]
 
 # rope breaking logic
 var expected_total_length: float
 var time_under_strain: float = 0
-var central_joint: Generic6DOFJoint3D
 var broken: bool = false
 
 func _init(joint_position: Array[Vector3] = [], segment_distance: Vector3 = Vector3.ZERO) -> void:
@@ -46,7 +46,6 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 	
 	var segments_positions = []
 	var segments_directions = []
-	var joints = []
 	
 	for i in range(1, joint_positions.size()):
 		segments_positions.push_back((joint_positions[i-1] + joint_positions[i]) / 2)
@@ -65,20 +64,27 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 		_append_strain_points(segments[i], joint_positions[i], joint_positions[i+1])
 	
 	for i in range(joint_positions.size()):
-		var joint = _make_6dof_joint()
-		joint.position = joint_positions[i]
+		var node_a: Node3D;
+		var node_b: Node3D;
 		if (i == 0):
-			joint.node_a = first_end_ref.get_path()
-			joint.node_b = segments[i].get_path()
+			node_a = first_end_ref
+			node_b = segments[i]
 		elif (i == joint_positions.size()-1):
-			joint.node_a = segments[i-1].get_path()
-			joint.node_b = second_end_ref.get_path()
+			node_a = segments[i-1]
+			node_b = second_end_ref
 		else:
-			joint.node_a = segments[i-1].get_path()
-			joint.node_b = segments[i].get_path()
-		if (i == joint_positions.size() / 2):
-			central_joint = joint
-		add_child(joint)
+			node_a = segments[i-1]
+			node_b = segments[i]
+		var joint_rid = PhysicsServer3D.joint_create();
+		PhysicsServer3D.joint_make_generic_6dof(
+			joint_rid,
+			node_a.get_rid(),
+			Transform3D(Basis.IDENTITY, node_a.to_local(joint_positions[i])),
+			node_b.get_rid(),
+			Transform3D(Basis.IDENTITY, node_b.to_local(joint_positions[i]))
+		);
+		_configure_6dof_joint(joint_rid)
+		joint_rids.push_back(joint_rid)
 
 func _make_alignment_basis(direction: Vector3) -> Basis:
 	var rope_align_basis_y = direction
@@ -111,12 +117,13 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	segment.add_child(collider)
 	return segment
 
-func _make_6dof_joint() -> Generic6DOFJoint3D:
-	var joint = Generic6DOFJoint3D.new()
-	joint.set_flag_x(Generic6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-	joint.set_flag_y(Generic6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-	joint.set_flag_z(Generic6DOFJoint3D.FLAG_ENABLE_ANGULAR_LIMIT, false)
-	return joint
+func _configure_6dof_joint(joint: RID):
+	for axis in range(3):
+		# Enable the linear limit
+		PhysicsServer3D.generic_6dof_joint_set_flag(joint, axis, PhysicsServer3D.G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT, true)
+		# Set both upper and lower limits to 0 to completely lock movement on this axis
+		PhysicsServer3D.generic_6dof_joint_set_param(joint, axis, PhysicsServer3D.G6DOF_JOINT_LINEAR_LOWER_LIMIT, 0.0)
+		PhysicsServer3D.generic_6dof_joint_set_param(joint, axis, PhysicsServer3D.G6DOF_JOINT_LINEAR_UPPER_LIMIT, 0.0)
 
 func _append_strain_points(target: RigidBody3D, position1: Vector3, position2: Vector3) -> void:
 	var sp1 = Node3D.new()
@@ -142,7 +149,9 @@ func _process(delta: float) -> void:
 func _break_rope() -> void:
 	if (!broken):
 		GameState.rope_broken(self)
-		central_joint.queue_free()
+		var center = int(joint_rids.size() / 2)
+		PhysicsServer3D.joint_clear(joint_rids[center])
+		joint_rids.remove_at(center)
 		broken = true
 
 func real_length() -> float:
@@ -168,6 +177,9 @@ func snapshot() -> Variant:
 
 func restore_from_snapshot(data: Variant):
 	joint_positions = data.joint_positions
+	for rid in joint_rids:
+		PhysicsServer3D.free_rid(rid)
+	joint_rids.clear()
 	broken = false
 	time_under_strain = 0
 	strain_points.clear()
