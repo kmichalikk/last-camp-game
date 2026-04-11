@@ -41,7 +41,6 @@ func _ready() -> void:
 			joint_positions.push_back(player_a_ref.global_position + i * segment_distance)
 		expected_total_length = players_distance.length()
 	
-	
 	_make_rope.call_deferred(player_a_ref, player_b_ref, joint_positions)
 	
 	visual_rope = VisualRope.new()
@@ -133,13 +132,6 @@ func _append_strain_points(target: RigidBody3D, position1: Vector3, position2: V
 	target.add_child(sp2)
 	sp2.global_position = position2
 	strain_points.push_back(sp2)
-
-func _generate_circle_polygon(radius: float, sides: int) -> PackedVector2Array:
-	var points = PackedVector2Array()
-	for i in range(sides):
-		var angle = i * TAU / sides
-		points.push_back(Vector2(cos(angle), sin(angle)) * radius)
-	return points
 
 func _process(delta: float) -> void:
 	var length = real_length()
