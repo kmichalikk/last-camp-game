@@ -9,10 +9,16 @@ signal rope_broken()
 
 @export var num_segments: int = 10
 
+@export var show_debug_joints: bool = false:
+	set(value):
+		show_debug_joints = value
+		_update_visibility()
+
 var segment_distance: Vector3
 
 var material: StandardMaterial3D
 var strain_points: Array[Node3D]
+var segments: Array[RigidBody3D] = []
 
 var joint_positions: Array[Vector3]
 
@@ -45,6 +51,7 @@ func _ready() -> void:
 	visual_rope = VisualRope.new()
 	add_child(visual_rope)
 	visual_rope.setup.call_deferred(material)
+	_update_visibility.call_deferred()
 
 func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_positions: Array[Vector3]):
 	var segments_positions = []
@@ -55,7 +62,7 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 		segments_positions.push_back((joint_positions[i-1] + joint_positions[i]) / 2)
 		segments_directions.push_back((joint_positions[i] - joint_positions[i-1]).normalized())
 	
-	var segments = []
+	segments = []
 	for i in range(segments_positions.size()):
 		var segment = _make_rope_segment(segments_positions[i])
 		segments.push_back(segment)
@@ -150,6 +157,14 @@ func _break_rope() -> void:
 		GameState.rope_broken(self)
 		central_joint.queue_free()
 		broken = true
+		
+func _update_visibility() -> void:
+	if visual_rope:
+		visual_rope.visible = !show_debug_joints
+	
+	for segment in segments:
+		for child in segment.get_children():
+			child.visible = show_debug_joints
 
 func real_length() -> float:
 	var total = 0.0
