@@ -23,9 +23,37 @@ var central_joint: Generic6DOFJoint3D
 var broken: bool = false
 
 # visual rope
-var visual_path_node: Path3D
-var visual_rope: CSGPolygon3D
-var visual_curve: Curve3D
+const VISUAL_ROPE_RADIUS = 0.05
+const VISUAL_ROPE_SIDES = 12
+const VISUAL_ROPE_PARTS = 2
+
+class VisualRopePart:
+	var path: Path3D
+	var poly: CSGPolygon3D
+	var curve: Curve3D
+
+	func _init(parent: Node3D, mat: Material, polygon_points: PackedVector2Array):
+		path = Path3D.new()
+		curve = Curve3D.new()
+		path.curve = curve
+		parent.add_child(path)
+		
+		poly = CSGPolygon3D.new()
+		parent.add_child(poly)
+		poly.mode = CSGPolygon3D.MODE_PATH
+		poly.path_node = poly.get_path_to(path)
+		poly.path_interval_type = CSGPolygon3D.PATH_INTERVAL_DISTANCE
+		poly.path_interval = 0.1
+		poly.path_rotation = CSGPolygon3D.PATH_ROTATION_POLYGON
+		poly.polygon = polygon_points
+		poly.material = mat
+
+	func update(points: Array[Vector3], origin_node: Node3D):
+		curve.clear_points()
+		for p in points:
+			curve.add_point(origin_node.to_local(p))
+			
+var visual_parts: Array[VisualRopePart] = []
 
 func _init(joint_position: Array[Vector3] = [], segment_distance: Vector3 = Vector3.ZERO) -> void:
 	self.joint_positions = joint_positions
@@ -134,24 +162,9 @@ func _append_strain_points(target: RigidBody3D, position1: Vector3, position2: V
 	strain_points.push_back(sp2)
 
 func _make_visual_rope():
-	visual_path_node = Path3D.new()
-	visual_curve = Curve3D.new()
-	visual_path_node.curve = visual_curve
-	add_child(visual_path_node)
-	
-	visual_rope = CSGPolygon3D.new()
-	add_child(visual_rope)
-	
-	visual_rope.mode = CSGPolygon3D.MODE_PATH
-	visual_rope.path_node = visual_rope.get_path_to(visual_path_node)
-	visual_rope.path_interval_type = CSGPolygon3D.PATH_INTERVAL_DISTANCE
-	visual_rope.path_interval = 0.1
-	visual_rope.path_rotation = CSGPolygon3D.PATH_ROTATION_POLYGON
-	
-	visual_rope.polygon = _generate_circle_polygon(0.05, 12) 
-	visual_rope.material = material
-	
-
+	var poly_shape = _generate_circle_polygon(VISUAL_ROPE_RADIUS, VISUAL_ROPE_SIDES)
+	for i in range(VISUAL_ROPE_PARTS):
+		visual_parts.append(VisualRopePart.new(self, material, poly_shape))
 
 func _generate_circle_polygon(radius: float, sides: int) -> PackedVector2Array:
 	var points = PackedVector2Array()
@@ -180,17 +193,15 @@ func _break_rope() -> void:
 		broken = true
 		
 func _update_visual_rope():
-	if broken:
-		visual_rope.visible = false
-		return
-
-	var points = get_joint_points() 
-	if points.size() < 2:
-		return
-
-	visual_curve.clear_points()
-	for p in points:
-		visual_curve.add_point(visual_path_node.to_local(p))
+	var points = get_joint_points()
+	var total_points = points.size()
+	if total_points < 2: return
+	
+	for i in range(VISUAL_ROPE_PARTS):
+		var start_idx = floori(i * (total_points - 1) / float(VISUAL_ROPE_PARTS))
+		var end_idx = floori((i + 1) * (total_points - 1) / float(VISUAL_ROPE_PARTS))
+		var segment_slice = points.slice(start_idx, end_idx + 1)
+		visual_parts[i].update(segment_slice, self)
 
 func real_length() -> float:
 	var total = 0.0
