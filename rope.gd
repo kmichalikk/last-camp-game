@@ -22,7 +22,6 @@ var time_under_strain: float = 0
 var central_joint: Generic6DOFJoint3D
 var broken: bool = false
 
-# visual rope
 var visual_rope: VisualRope
 
 func _init(joint_position: Array[Vector3] = [], segment_distance: Vector3 = Vector3.ZERO) -> void:
