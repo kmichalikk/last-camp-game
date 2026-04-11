@@ -9,10 +9,16 @@ signal rope_broken()
 
 @export var num_segments: int = 10
 
+@export var show_debug_joints: bool = false:
+	set(value):
+		show_debug_joints = value
+		_update_visibility()
+
 var segment_distance: Vector3
 
 var material: StandardMaterial3D
 var strain_points: Array[Node3D]
+var segments: Array[RigidBody3D] = []
 
 var joint_positions: Array[Vector3]
 
@@ -21,6 +27,8 @@ var expected_total_length: float
 var time_under_strain: float = 0
 var central_joint: Generic6DOFJoint3D
 var broken: bool = false
+
+var visual_rope: VisualRope
 
 func _init(joint_position: Array[Vector3] = [], segment_distance: Vector3 = Vector3.ZERO) -> void:
 	self.joint_positions = joint_positions
@@ -39,6 +47,11 @@ func _ready() -> void:
 		expected_total_length = players_distance.length()
 	
 	_make_rope.call_deferred(player_a_ref, player_b_ref, joint_positions)
+	
+	visual_rope = VisualRope.new()
+	add_child(visual_rope)
+	visual_rope.setup.call_deferred(material)
+	_update_visibility.call_deferred()
 
 func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_positions: Array[Vector3]):
 	var segments_positions = []
@@ -49,7 +62,7 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 		segments_positions.push_back((joint_positions[i-1] + joint_positions[i]) / 2)
 		segments_directions.push_back((joint_positions[i] - joint_positions[i-1]).normalized())
 	
-	var segments = []
+	segments = []
 	for i in range(segments_positions.size()):
 		var segment = _make_rope_segment(segments_positions[i])
 		segments.push_back(segment)
@@ -99,6 +112,7 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	mesh.height = segment_distance.length() + 0.1
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = mesh
+	mesh_instance.visible = false
 	segment.add_child(mesh_instance)
 	var collider = CollisionShape3D.new()
 	var shape = CylinderShape3D.new()
@@ -135,12 +149,22 @@ func _process(delta: float) -> void:
 	else:
 		time_under_strain = 0
 		material.albedo_color = Color('orange')
+	
+	visual_rope.update_rope(get_raw_joint_points(), broken)
 
 func _break_rope() -> void:
 	if (!broken):
 		GameState.rope_broken(self)
 		central_joint.queue_free()
 		broken = true
+		
+func _update_visibility() -> void:
+	if visual_rope:
+		visual_rope.visible = !show_debug_joints
+	
+	for segment in segments:
+		for child in segment.get_children():
+			child.visible = show_debug_joints
 
 func real_length() -> float:
 	var total = 0.0
@@ -151,10 +175,16 @@ func real_length() -> float:
 	return total
 
 func get_joint_points() -> Array[Vector3]:
-	var joint_points = []
+	var joint_points: Array[Vector3] = []
 	for i in range(0, strain_points.size(), 2):
 		if (i == 0 || i + 1 == strain_points.size()):
 			joint_points.push_back(strain_points[i].global_position)
 		else:
 			joint_points.push_back((strain_points[i-1].global_position + strain_points[i].global_position) / 2)
 	return joint_points
+
+func get_raw_joint_points() -> Array[Vector3]:
+	var points: Array[Vector3] = []
+	for sp in strain_points:
+		points.push_back(sp.global_position)
+	return points
