@@ -4,6 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://be8138hdon8ls" path="res://rock_tri_flat_free.tscn" id="3_036b0"]
 [ext_resource type="PackedScene" uid="uid://gtwcim4xuhy6" path="res://rock_free.tscn" id="3_aqk2v"]
 [ext_resource type="PackedScene" uid="uid://bv20lwjb6q2fl" path="res://rope.tscn" id="3_tlwt5"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_pkg7o"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="6_gbfbk"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_ioo17"]
+
+[sub_resource type="Resource" id="Resource_wse8f"]
+script = ExtResource("7_ioo17")
 
 [node name="World" type="Node3D" unique_id=2081898281]
 
@@ -70,12 +76,26 @@ can_grab_south = true
 can_grab_west = true
 can_grab_east = true
 
+[node name="Node3D5" parent="rocks" unique_id=1828432527 instance=ExtResource("3_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -7)
+
+[node name="Node3D4" parent="rocks" unique_id=1084329457 instance=ExtResource("3_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -5)
+
 [node name="BluePlayer" parent="." unique_id=1513608525 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 attached_ropes = [NodePath("../RopeBlueYellow"), NodePath("../RopeBlueMagenta")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=580584148]
-transform = Transform3D(0.49776617, -0.5085401, 0.7025781, 0, 0.81006455, 0.5863408, -0.8673114, -0.2918606, 0.4032227, 7.368701, 5.7291045, 3.350478)
+physics_interpolation_mode = 1
+transform = Transform3D(0.70710254, -0.49999538, 0.49999747, 0, 0.7071003, 0.70710325, -0.70710254, -0.49999538, 0.49999747, 3.9999797, 6.656826, 3.9999797)
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Camera3D" unique_id=1775444176]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_pkg7o")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=256626961]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 5, 2)
@@ -100,3 +120,20 @@ attached_ropes = [NodePath("../RopeBlueMagenta")]
 [node name="RopeBlueMagenta" parent="." unique_id=1453056359 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
 player_a_ref = NodePath("../BluePlayer")
 player_b_ref = NodePath("../MagentaPlayer")
+
+[node name="PhantomCamera3D" type="Node3D" parent="." unique_id=2070390006 node_paths=PackedStringArray("follow_targets")]
+transform = Transform3D(0.70710254, -0.49999538, 0.49999747, 0, 0.7071003, 0.70710325, -0.70710254, -0.49999538, 0.49999747, 3.9999797, 6.656826, 3.9999797)
+top_level = true
+script = ExtResource("6_gbfbk")
+follow_mode = 3
+follow_targets = [NodePath("../BluePlayer"), NodePath("../YellowPlayer"), NodePath("../MagentaPlayer")]
+tween_resource = SubResource("Resource_wse8f")
+follow_damping = true
+follow_damping_value = Vector3(0.25, 0.25, 0.25)
+auto_follow_distance = true
+auto_follow_distance_min = 5.0
+auto_follow_distance_max = 8.0
+auto_follow_distance_divisor = 2.0
+align_transform_with_view = Callable()
+align_position_with_view = Callable()
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
