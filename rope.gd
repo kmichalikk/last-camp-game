@@ -144,7 +144,7 @@ func _process(delta: float) -> void:
 		time_under_strain = 0
 		material.albedo_color = Color('orange')
 	
-	visual_rope.update_rope(strain_points, broken)
+	visual_rope.update_rope(get_raw_joint_points(), broken)
 
 func _break_rope() -> void:
 	if (!broken):
@@ -168,3 +168,9 @@ func get_joint_points() -> Array[Vector3]:
 		else:
 			joint_points.push_back((strain_points[i-1].global_position + strain_points[i].global_position) / 2)
 	return joint_points
+
+func get_raw_joint_points() -> Array[Vector3]:
+	var points: Array[Vector3] = []
+	for sp in strain_points:
+		points.push_back(sp.global_position)
+	return points
