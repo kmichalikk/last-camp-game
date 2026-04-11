@@ -22,6 +22,11 @@ var time_under_strain: float = 0
 var central_joint: Generic6DOFJoint3D
 var broken: bool = false
 
+# visual rope
+var visual_path_node: Path3D
+var visual_rope: CSGPolygon3D
+var visual_curve: Curve3D
+
 func _init(joint_position: Array[Vector3] = [], segment_distance: Vector3 = Vector3.ZERO) -> void:
 	self.joint_positions = joint_positions
 	self.segment_distance = segment_distance
@@ -38,7 +43,9 @@ func _ready() -> void:
 			joint_positions.push_back(player_a_ref.global_position + i * segment_distance)
 		expected_total_length = players_distance.length()
 	
+	
 	_make_rope.call_deferred(player_a_ref, player_b_ref, joint_positions)
+	_make_visual_rope.call_deferred()
 
 func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_positions: Array[Vector3]):
 	var segments_positions = []
@@ -99,6 +106,7 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	mesh.height = segment_distance.length() + 0.1
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = mesh
+	mesh_instance.visible = false
 	segment.add_child(mesh_instance)
 	var collider = CollisionShape3D.new()
 	var shape = CylinderShape3D.new()
@@ -125,6 +133,33 @@ func _append_strain_points(target: RigidBody3D, position1: Vector3, position2: V
 	sp2.global_position = position2
 	strain_points.push_back(sp2)
 
+func _make_visual_rope():
+	visual_path_node = Path3D.new()
+	visual_curve = Curve3D.new()
+	visual_path_node.curve = visual_curve
+	add_child(visual_path_node)
+	
+	visual_rope = CSGPolygon3D.new()
+	add_child(visual_rope)
+	
+	visual_rope.mode = CSGPolygon3D.MODE_PATH
+	visual_rope.path_node = visual_rope.get_path_to(visual_path_node)
+	visual_rope.path_interval_type = CSGPolygon3D.PATH_INTERVAL_DISTANCE
+	visual_rope.path_interval = 0.1
+	visual_rope.path_rotation = CSGPolygon3D.PATH_ROTATION_POLYGON
+	
+	visual_rope.polygon = _generate_circle_polygon(0.05, 12) 
+	visual_rope.material = material
+	
+
+
+func _generate_circle_polygon(radius: float, sides: int) -> PackedVector2Array:
+	var points = PackedVector2Array()
+	for i in range(sides):
+		var angle = i * TAU / sides
+		points.push_back(Vector2(cos(angle), sin(angle)) * radius)
+	return points
+
 func _process(delta: float) -> void:
 	var length = real_length()
 	if (length > expected_total_length + GameState.ROPE_ALLOWED_STRETCH):
@@ -135,12 +170,27 @@ func _process(delta: float) -> void:
 	else:
 		time_under_strain = 0
 		material.albedo_color = Color('orange')
+	
+	_update_visual_rope()
 
 func _break_rope() -> void:
 	if (!broken):
 		GameState.rope_broken(self)
 		central_joint.queue_free()
 		broken = true
+		
+func _update_visual_rope():
+	if broken:
+		visual_rope.visible = false
+		return
+
+	var points = get_joint_points() 
+	if points.size() < 2:
+		return
+
+	visual_curve.clear_points()
+	for p in points:
+		visual_curve.add_point(visual_path_node.to_local(p))
 
 func real_length() -> float:
 	var total = 0.0
@@ -151,7 +201,7 @@ func real_length() -> float:
 	return total
 
 func get_joint_points() -> Array[Vector3]:
-	var joint_points = []
+	var joint_points: Array[Vector3] = []
 	for i in range(0, strain_points.size(), 2):
 		if (i == 0 || i + 1 == strain_points.size()):
 			joint_points.push_back(strain_points[i].global_position)
