@@ -75,26 +75,33 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 
 	for i in range(segments.size()):
 		_append_strain_points(segments[i], joint_positions[i], joint_positions[i+1])
-
+	
+	var anchor_offset_from_node_center = segment_distance.length() / 2
 	for i in range(joint_positions.size()):
 		var node_a: Node3D;
+		var node_a_anchor = Vector3.ZERO;
 		var node_b: Node3D;
+		var node_b_anchor = Vector3.ZERO;
 		if (i == 0):
 			node_a = first_end_ref
 			node_b = segments[i]
+			node_b_anchor = Vector3.DOWN * anchor_offset_from_node_center
 		elif (i == joint_positions.size()-1):
 			node_a = segments[i-1]
+			node_a_anchor = Vector3.UP * anchor_offset_from_node_center
 			node_b = second_end_ref
 		else:
 			node_a = segments[i-1]
+			node_a_anchor = Vector3.UP * anchor_offset_from_node_center
 			node_b = segments[i]
+			node_b_anchor = Vector3.DOWN * anchor_offset_from_node_center
 		var joint_rid = PhysicsServer3D.joint_create();
 		PhysicsServer3D.joint_make_generic_6dof(
 			joint_rid,
 			node_a.get_rid(),
-			Transform3D(Basis.IDENTITY, node_a.to_local(joint_positions[i])),
+			Transform3D(Basis.IDENTITY, node_a_anchor),
 			node_b.get_rid(),
-			Transform3D(Basis.IDENTITY, node_b.to_local(joint_positions[i]))
+			Transform3D(Basis.IDENTITY, node_b_anchor)
 		);
 		_configure_6dof_joint(joint_rid)
 		joint_rids.push_back(joint_rid)
