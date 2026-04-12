@@ -21,6 +21,8 @@ var is_grabbing: bool = false
 var is_fixed: bool = false
 
 func _ready() -> void:
+	add_to_group("history")
+	
 	material.albedo_color = player_color
 	material.emission = player_color
 	material.emission_enabled = false
@@ -69,6 +71,7 @@ func stand_on(target: Node3D):
 			detach_player_above()
 	freeze = true
 	is_fixed = true
+	History.action_performed.emit()
 
 func detach_player_above():
 	if (player_above == null):
@@ -128,5 +131,24 @@ func _on_player_stack_highlight_input_event(camera: Node, event: InputEvent, eve
 
 func _on_game_over():
 	is_grabbing = false
+	grab_indicator.visible = false
 	is_fixed = false
 	freeze = false
+
+func snapshot() -> Variant:
+	return {
+		"player_above": player_above,
+		"player_below": player_below,
+		"is_grabbing": is_grabbing,
+		"is_fixed": is_fixed,
+		"global_transform": global_transform
+	}
+
+func restore_from_snapshot(data: Variant):
+	player_above = data.player_above
+	player_below = data.player_below
+	is_grabbing = data.is_grabbing
+	grab_indicator.visible = is_grabbing
+	is_fixed = data.is_fixed
+	freeze = is_fixed
+	global_transform = data.global_transform
