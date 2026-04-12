@@ -6,6 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://bv20lwjb6q2fl" path="res://rope.tscn" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_pkg7o"]
 [ext_resource type="Script" uid="uid://bcsjq7vfy5t84" path="res://phantom_camera_3d.gd" id="6_pkg7o"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_pkg7o"]
+
+[sub_resource type="Resource" id="Resource_gbfbk"]
+script = ExtResource("7_pkg7o")
 
 [node name="World" type="Node3D" unique_id=2081898281]
 
@@ -99,10 +103,6 @@ light_energy = 7.518
 light_size = 0.148
 omni_range = 587.861
 
-[node name="BluePlayer" parent="." unique_id=1513608525 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-attached_ropes = [NodePath("../RopeBlueYellow"), NodePath("../RopeBlueMagenta")]
-
 [node name="YellowPlayer" parent="." unique_id=1424847384 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
 player_color = Color(0.8681055, 0.85430175, 0, 1)
@@ -127,6 +127,7 @@ top_level = true
 script = ExtResource("6_pkg7o")
 follow_mode = 3
 follow_targets = [NodePath("../BluePlayer"), NodePath("../YellowPlayer"), NodePath("../MagentaPlayer")]
+tween_resource = SubResource("Resource_gbfbk")
 follow_damping = true
 follow_damping_value = Vector3(0.25, 0.25, 0.25)
 auto_follow_distance = true

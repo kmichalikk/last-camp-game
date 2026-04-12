@@ -49,11 +49,6 @@ func _ready() -> void:
 
 	_make_rope.call_deferred(player_a_ref, player_b_ref, joint_positions)
 
-	visual_rope = VisualRope.new()
-	add_child(visual_rope)
-	visual_rope.setup.call_deferred(material)
-	_update_visibility.call_deferred()
-
 func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_positions: Array[Vector3]):
 	global_position = Vector3.ZERO
 
@@ -74,7 +69,7 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 		add_child(segment)
 
 	for i in range(segments.size()):
-		_append_strain_points(segments[i], joint_positions[i], joint_positions[i+1])
+		_append_strain_points(segments[i])
 	
 	var anchor_offset_from_node_center = segment_distance.length() / 2
 	for i in range(joint_positions.size()):
@@ -105,6 +100,11 @@ func _make_rope(first_end_ref: RigidBody3D, second_end_ref: RigidBody3D, joint_p
 		);
 		_configure_6dof_joint(joint_rid)
 		joint_rids.push_back(joint_rid)
+	
+	visual_rope = VisualRope.new()
+	add_child(visual_rope)
+	visual_rope.setup.call_deferred(material)
+	_update_visibility.call_deferred()
 
 func _make_alignment_basis(direction: Vector3) -> Basis:
 	var rope_align_basis_y = direction
@@ -120,7 +120,7 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	var segment = RigidBody3D.new()
 	segment.mass = 0.5 / num_segments
 	segment.position = position
-	segment.collision_layer = 8
+	segment.collision_layer = 0
 	segment.collision_mask = 4
 	var mesh = CapsuleMesh.new()
 	mesh.material = material
@@ -140,20 +140,20 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 
 func _configure_6dof_joint(joint: RID):
 	for axis in range(3):
-		# Enable the linear limit
 		PhysicsServer3D.generic_6dof_joint_set_flag(joint, axis, PhysicsServer3D.G6DOF_JOINT_FLAG_ENABLE_LINEAR_LIMIT, true)
-		# Set both upper and lower limits to 0 to completely lock movement on this axis
 		PhysicsServer3D.generic_6dof_joint_set_param(joint, axis, PhysicsServer3D.G6DOF_JOINT_LINEAR_LOWER_LIMIT, 0.0)
 		PhysicsServer3D.generic_6dof_joint_set_param(joint, axis, PhysicsServer3D.G6DOF_JOINT_LINEAR_UPPER_LIMIT, 0.0)
 
-func _append_strain_points(target: RigidBody3D, position1: Vector3, position2: Vector3) -> void:
+
+func _append_strain_points(target: RigidBody3D) -> void:
+	var offset_from_center = segment_distance.length() / 2
 	var sp1 = Node3D.new()
 	target.add_child(sp1)
-	sp1.global_position = position1
+	sp1.position = Vector3.DOWN * offset_from_center
 	strain_points.push_back(sp1)
 	var sp2 = Node3D.new()
 	target.add_child(sp2)
-	sp2.global_position = position2
+	sp2.position = Vector3.UP * offset_from_center
 	strain_points.push_back(sp2)
 
 func _process(delta: float) -> void:
@@ -167,7 +167,7 @@ func _process(delta: float) -> void:
 		time_under_strain = 0
 		material.albedo_color = Color('orange')
 
-	visual_rope.update_rope(get_raw_joint_points(), broken)
+	visual_rope.update_rope(get_visual_rope_known_positions(), broken)
 
 func _break_rope() -> void:
 	if (!broken):
@@ -201,7 +201,7 @@ func get_joint_points() -> Array[Vector3]:
 	joint_points.push_back(strain_points[-1].global_position)
 	return joint_points
 
-func get_raw_joint_points() -> Array[Vector3]:
+func get_visual_rope_known_positions() -> Array[Vector3]:
 	var points: Array[Vector3] = []
 	for sp in strain_points:
 		points.push_back(sp.global_position)
@@ -220,6 +220,7 @@ func restore_from_snapshot(data: Variant):
 	broken = false
 	time_under_strain = 0
 	strain_points.clear()
+	visual_rope = null
 	for child in get_children():
 		child.free()
 	_make_rope(player_a_ref, player_b_ref, joint_positions)

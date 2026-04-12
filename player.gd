@@ -131,6 +131,7 @@ func _on_player_stack_highlight_input_event(camera: Node, event: InputEvent, eve
 
 func _on_game_over():
 	is_grabbing = false
+	grab_indicator.visible = false
 	is_fixed = false
 	freeze = false
 
@@ -147,8 +148,7 @@ func restore_from_snapshot(data: Variant):
 	player_above = data.player_above
 	player_below = data.player_below
 	is_grabbing = data.is_grabbing
-	if (is_grabbing):
-		grab_indicator.visible = true
+	grab_indicator.visible = is_grabbing
 	is_fixed = data.is_fixed
 	freeze = is_fixed
 	global_transform = data.global_transform

@@ -17,6 +17,9 @@ func _input(event: InputEvent) -> void:
 			_should_undo_current_state_first = false
 		undo_one()
 
+func is_ready_for_snapshot() -> bool:
+	return true
+
 func snapshot():
 	await get_tree().create_timer(PHYSICS_SETTLED_AFTER_ACTION_THRESHOLD).timeout
 	var data = {}
