@@ -53,28 +53,30 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4, 
 
 [node name="rock_111111" parent="rocks" unique_id=1859325922 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 1)
+can_interact_north = true
+can_interact_east = true
 
 [node name="rock_111112" parent="rocks" unique_id=917113246 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 1)
-can_grab_north = true
-can_grab_south = true
-can_grab_west = true
-can_grab_east = true
+can_interact_north = true
+can_interact_south = true
+can_interact_west = true
+can_interact_east = true
 
 [node name="rock_111113" parent="rocks" unique_id=623029153 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 1)
-can_grab_north = true
-can_grab_south = true
-can_grab_west = true
-can_grab_east = true
+can_interact_north = true
+can_interact_south = true
+can_interact_west = true
+can_interact_east = true
 
 [node name="rock_111114" parent="rocks" unique_id=44156473 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3, -3)
 can_stand = true
-can_grab_north = true
-can_grab_south = true
-can_grab_west = true
-can_grab_east = true
+can_interact_north = true
+can_interact_south = true
+can_interact_west = true
+can_interact_east = true
 
 [node name="Node3D5" parent="rocks" unique_id=1828432527 instance=ExtResource("3_036b0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -7)
@@ -116,10 +118,12 @@ attached_ropes = [NodePath("../RopeBlueMagenta")]
 [node name="RopeBlueYellow" parent="." unique_id=1995825324 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
 player_a_ref = NodePath("../BluePlayer")
 player_b_ref = NodePath("../YellowPlayer")
+show_debug_joints = true
 
 [node name="RopeBlueMagenta" parent="." unique_id=1453056359 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
 player_a_ref = NodePath("../BluePlayer")
 player_b_ref = NodePath("../MagentaPlayer")
+show_debug_joints = true
 
 [node name="PhantomCamera3D" type="Node3D" parent="." unique_id=2070390006 node_paths=PackedStringArray("follow_targets")]
 transform = Transform3D(0.70710254, -0.49999538, 0.49999747, 0, 0.7071003, 0.70710325, -0.70710254, -0.49999538, 0.49999747, 3.9999797, 6.656826, 3.9999797)

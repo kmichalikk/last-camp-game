@@ -49,7 +49,7 @@ func _snap_to_floor_triggered(body: Node3D) -> void:
 	_snap_to_floor_if_possible(body)
 
 func _snap_to_floor_if_possible(body: Node3D) -> bool:
-	if ((body is RockBase and body.can_stand) or body is Player) \
+	if ((body is RockBase and body.can_stand) or (body is Player and body.is_fixed)) \
 	and body.global_position.distance_squared_to(self.global_position) < GameState.PLAYER_SNAP_TO_FLOOR_DISTANCE:
 		stand_on(body)
 		return true
@@ -61,7 +61,8 @@ func stand_on(target: Node3D):
 	if (target is Player):
 		target.player_above = self
 		player_below = target
-	else:
+	elif player_below:
+		player_below.player_above = null
 		player_below = null
 	global_position = target.global_position + Vector3.UP
 	if (player_above != null):
@@ -99,6 +100,14 @@ func grab(block: Node3D, normal: Vector3) -> void:
 		is_fixed = true
 		freeze = true
 
+func jump_off(tile: Node3D, normal: Vector3) -> void:
+	if is_grabbing or !is_fixed or player_below != null:
+		return
+	global_position = tile.global_position + normal + 0.5 * Vector3.UP
+	detach_player_above()
+	is_fixed = false
+	freeze = false
+	
 
 func _input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if any_input_event is InputEventMouseButton and any_input_event.is_pressed():
