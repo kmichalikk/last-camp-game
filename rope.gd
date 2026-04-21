@@ -185,6 +185,34 @@ func _update_visibility() -> void:
 		for child in segment.get_children():
 			child.visible = show_debug_joints
 
+func pull(from_player: Player) -> void:
+	if from_player == player_a_ref:
+		if player_b_ref.is_fixed:
+			player_a_ref.ragdoll()
+			_do_pull(player_a_ref)
+		elif player_a_ref.is_fixed and !player_b_ref.is_fixed:
+			player_b_ref.ragdoll()
+			_do_pull(player_b_ref)
+	else:
+		if player_a_ref.is_fixed:
+			player_b_ref.ragdoll()
+			_do_pull(player_b_ref)
+		elif player_b_ref.is_fixed and !player_a_ref.is_fixed:
+			player_a_ref.ragdoll()
+			_do_pull(player_a_ref)
+
+func _do_pull(from_player: Player) -> void:
+	var sign = 1
+	if from_player == player_b_ref:
+		sign = -1
+	var looseness = 0
+	var direction = (player_b_ref.global_position - player_a_ref.global_position).normalized()
+	for segment in segments:
+		looseness += abs((direction - segment.global_basis.y).length())
+	var force = 4 / max(1, looseness)
+	for segment in segments:
+		segment.apply_impulse(sign * segment.global_basis.y * force)
+
 func real_length() -> float:
 	var total = 0.0
 	var prev_node = strain_points[0]

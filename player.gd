@@ -20,6 +20,8 @@ var player_below: Player = null
 var is_grabbing: bool = false
 var is_fixed: bool = false
 
+var _last_pull_time: float = 0.0
+
 func _ready() -> void:
 	add_to_group("history")
 	
@@ -100,6 +102,16 @@ func grab(block: Node3D, normal: Vector3) -> void:
 		is_fixed = true
 		freeze = true
 
+func ragdoll() -> void:
+	is_fixed = false
+	is_grabbing = false
+	grab_indicator.visible = false
+	freeze = false
+	if player_below:
+		player_below.detach_player_above()
+	else:
+		detach_player_above()
+
 func jump_off(tile: Node3D, normal: Vector3) -> void:
 	if is_grabbing or !is_fixed or player_below != null:
 		return
@@ -107,7 +119,12 @@ func jump_off(tile: Node3D, normal: Vector3) -> void:
 	detach_player_above()
 	is_fixed = false
 	freeze = false
-	
+
+func _input(event: InputEvent) -> void:
+	if GameState.target_player == self and event.is_action_pressed("pull"):
+		if attached_ropes.size() == 1 and Time.get_unix_time_from_system() - _last_pull_time > GameState.ROPE_PULL_COOLDOWN:
+			attached_ropes[0].pull(self)
+			_last_pull_time = Time.get_unix_time_from_system()
 
 func _input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if any_input_event is InputEventMouseButton and any_input_event.is_pressed():
