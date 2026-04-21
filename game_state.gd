@@ -7,6 +7,7 @@ signal game_over()
 const PLAYER_SNAP_TO_FLOOR_DISTANCE = 1.3
 const ROPE_ALLOWED_STRETCH = 1.5
 const ROPE_PULL_COOLDOWN = 2
+const ROPE_PULL_FORCE_SCALE = 4
 
 var target_player: Player = null
 var is_game_over = false

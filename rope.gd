@@ -209,7 +209,7 @@ func _do_pull(from_player: Player) -> void:
 	var direction = (player_b_ref.global_position - player_a_ref.global_position).normalized()
 	for segment in segments:
 		looseness += abs((direction - segment.global_basis.y).length())
-	var force = 4 / max(1, looseness)
+	var force = GameState.ROPE_PULL_FORCE_SCALE / max(1, looseness)
 	for segment in segments:
 		segment.apply_impulse(sign * segment.global_basis.y * force)
 
