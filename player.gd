@@ -76,7 +76,6 @@ func stand_on(target: Node3D):
 			player_above.stand_on(self)
 		else:
 			detach_player_above()
-			
 	is_fixed = true
 	History.action_performed.emit()
 
@@ -197,4 +196,3 @@ func restore_from_snapshot(data: Variant):
 	is_fixed = data.is_fixed
 	freeze = is_fixed
 	global_transform = data.global_transform
-	
