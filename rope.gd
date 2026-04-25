@@ -118,7 +118,11 @@ func _make_alignment_basis(direction: Vector3) -> Basis:
 
 func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	var segment = RigidBody3D.new()
-	segment.mass = 0.5 / num_segments
+	segment.continuous_cd = true
+	var physics_mat = PhysicsMaterial.new()
+	physics_mat.friction = 0.0
+	segment.physics_material_override = physics_mat
+	segment.mass = 1.0 / num_segments
 	segment.position = position
 	segment.collision_layer = 0
 	segment.collision_mask = 4
@@ -131,9 +135,9 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	mesh_instance.visible = false
 	segment.add_child(mesh_instance)
 	var collider = CollisionShape3D.new()
-	var shape = CylinderShape3D.new()
+	var shape = CapsuleShape3D.new()
 	shape.radius = 0.08
-	shape.height = segment_distance.length()
+	shape.height = segment_distance.length() + (shape.radius * 2.0)
 	collider.shape = shape
 	segment.add_child(collider)
 	return segment
