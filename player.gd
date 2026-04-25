@@ -69,7 +69,6 @@ func stand_on(target: Node3D):
 		player_below.player_above = null
 		player_below = null
 		
-	# Replace direct position set with smooth move
 	_move_to_position_smoothly(target.global_position + Vector3.UP)
 	
 	if (player_above != null):
@@ -103,7 +102,6 @@ func grab(block: Node3D, normal: Vector3) -> void:
 	else:
 		grab_indicator.visible = true
 		
-		# Replace direct position set with smooth move
 		_move_to_position_smoothly(block.global_position + normal)
 		
 		is_grabbing = true
@@ -123,15 +121,23 @@ func jump_off(tile: Node3D, normal: Vector3) -> void:
 	if is_grabbing or !is_fixed or player_below != null:
 		return
 		
-	# Replace direct position set with smooth move
 	_move_to_position_smoothly(tile.global_position + normal + 0.5 * Vector3.UP)
-	
-	# Wait for the tween to finish before unfreezing, so they actually jump off properly
 	await _move_tween.finished
 	
 	detach_player_above()
 	is_fixed = false
 	freeze = false
+
+func _move_to_position_smoothly(target_pos: Vector3, duration: float = 0.2) -> void:
+	if _move_tween and _move_tween.is_valid():
+		_move_tween.kill()
+
+	freeze = true 
+	
+	_move_tween = create_tween()
+	_move_tween.tween_property(self, "global_position", target_pos, duration)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
 
 func _input(event: InputEvent) -> void:
 	if GameState.target_player == self and event.is_action_pressed("pull"):
@@ -192,16 +198,3 @@ func restore_from_snapshot(data: Variant):
 	freeze = is_fixed
 	global_transform = data.global_transform
 	
-func _move_to_position_smoothly(target_pos: Vector3, duration: float = 0.2) -> void:
-	if _move_tween and _move_tween.is_valid():
-		_move_tween.kill()
-
-	# Freeze ensures the body becomes Kinematic during the move, 
-	# preventing gravity/collisions from fighting our Tween.
-	freeze = true 
-	
-	_move_tween = create_tween()
-	# Trans_sine and ease_in_out make the acceleration/deceleration smooth for the rope
-	_move_tween.tween_property(self, "global_position", target_pos, duration)\
-		.set_trans(Tween.TRANS_SINE)\
-		.set_ease(Tween.EASE_IN_OUT)
