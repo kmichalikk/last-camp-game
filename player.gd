@@ -52,7 +52,8 @@ func _snap_to_floor_triggered(body: Node3D) -> void:
 	_snap_to_floor_if_possible(body)
 
 func _snap_to_floor_if_possible(body: Node3D) -> bool:
-	if ((body is RockBase and body.can_stand) or (body is Player and body.is_fixed)) \
+	if ((body is RockBase and body.can_stand and (!body.has_standing_player() || body.get_standing_player() == self)) \
+	 	or (body is Player and body.is_fixed and body.player_above == null)) \
 	and body.global_position.distance_squared_to(self.global_position) < GameState.PLAYER_SNAP_TO_FLOOR_DISTANCE:
 		stand_on(body)
 		return true
@@ -108,16 +109,6 @@ func grab(block: Node3D, normal: Vector3) -> void:
 		
 		is_grabbing = true
 		is_fixed = true
-
-func ragdoll() -> void:
-	is_fixed = false
-	is_grabbing = false
-	grab_indicator.visible = false
-	freeze = false
-	if player_below:
-		player_below.detach_player_above()
-	else:
-		detach_player_above()
 
 func jump_off(tile: Node3D, normal: Vector3) -> void:
 	if is_grabbing or !is_fixed or player_below != null:

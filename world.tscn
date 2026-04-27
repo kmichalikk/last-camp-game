@@ -118,12 +118,10 @@ attached_ropes = [NodePath("../RopeBlueMagenta")]
 [node name="RopeBlueYellow" parent="." unique_id=1995825324 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
 player_a_ref = NodePath("../BluePlayer")
 player_b_ref = NodePath("../YellowPlayer")
-show_debug_joints = true
 
 [node name="RopeBlueMagenta" parent="." unique_id=1453056359 node_paths=PackedStringArray("player_a_ref", "player_b_ref") instance=ExtResource("3_tlwt5")]
 player_a_ref = NodePath("../BluePlayer")
 player_b_ref = NodePath("../MagentaPlayer")
-show_debug_joints = true
 
 [node name="PhantomCamera3D" type="Node3D" parent="." unique_id=2070390006 node_paths=PackedStringArray("follow_targets")]
 transform = Transform3D(0.70710254, -0.49999538, 0.49999747, 0, 0.7071003, 0.70710325, -0.70710254, -0.49999538, 0.49999747, 3.9999797, 6.656826, 3.9999797)
