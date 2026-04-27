@@ -22,6 +22,8 @@ var is_fixed: bool = false
 
 var _last_pull_time: float = 0.0
 
+var _move_tween: Tween
+
 func _ready() -> void:
 	add_to_group("history")
 	
@@ -66,13 +68,14 @@ func stand_on(target: Node3D):
 	elif player_below:
 		player_below.player_above = null
 		player_below = null
-	global_position = target.global_position + Vector3.UP
+		
+	_move_to_position_smoothly(target.global_position + Vector3.UP)
+	
 	if (player_above != null):
 		if (!player_above.is_grabbing and GameState.can_player_stack_onto_player(player_above, self)):
 			player_above.stand_on(self)
 		else:
 			detach_player_above()
-	freeze = true
 	is_fixed = true
 	History.action_performed.emit()
 
@@ -97,10 +100,11 @@ func grab(block: Node3D, normal: Vector3) -> void:
 				return
 	else:
 		grab_indicator.visible = true
-		global_position = block.global_position + normal
+		
+		_move_to_position_smoothly(block.global_position + normal)
+		
 		is_grabbing = true
 		is_fixed = true
-		freeze = true
 
 func ragdoll() -> void:
 	is_fixed = false
@@ -115,10 +119,24 @@ func ragdoll() -> void:
 func jump_off(tile: Node3D, normal: Vector3) -> void:
 	if is_grabbing or !is_fixed or player_below != null:
 		return
-	global_position = tile.global_position + normal + 0.5 * Vector3.UP
+		
+	_move_to_position_smoothly(tile.global_position + normal + 0.5 * Vector3.UP)
+	await _move_tween.finished
+	
 	detach_player_above()
 	is_fixed = false
 	freeze = false
+
+func _move_to_position_smoothly(target_pos: Vector3, duration: float = 0.2) -> void:
+	if _move_tween and _move_tween.is_valid():
+		_move_tween.kill()
+
+	freeze = true 
+	
+	_move_tween = create_tween()
+	_move_tween.tween_property(self, "global_position", target_pos, duration)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
 
 func _input(event: InputEvent) -> void:
 	if GameState.target_player == self and event.is_action_pressed("pull"):
