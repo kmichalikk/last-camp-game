@@ -121,7 +121,7 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	segment.continuous_cd = true
 	
 	var physics_mat = PhysicsMaterial.new()
-	physics_mat.friction = 0.0
+	physics_mat.friction = 0.1
 	segment.physics_material_override = physics_mat
 	
 	segment.mass = 1.0 / num_segments
@@ -138,8 +138,8 @@ func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	segment.add_child(mesh_instance)
 	var collider = CollisionShape3D.new()
 	var shape = CapsuleShape3D.new()
-	shape.radius = 0.08
-	shape.height = segment_distance.length() + (shape.radius * 2.0)
+	shape.radius = segment_distance.length() / 2
+	shape.height = segment_distance.length() + 0.2
 	collider.shape = shape
 	segment.add_child(collider)
 	return segment
@@ -190,34 +190,6 @@ func _update_visibility() -> void:
 	for segment in segments:
 		for child in segment.get_children():
 			child.visible = show_debug_joints
-
-func pull(from_player: Player) -> void:
-	if from_player == player_a_ref:
-		if player_b_ref.is_fixed:
-			player_a_ref.ragdoll()
-			_do_pull(player_a_ref)
-		elif player_a_ref.is_fixed and !player_b_ref.is_fixed:
-			player_b_ref.ragdoll()
-			_do_pull(player_b_ref)
-	else:
-		if player_a_ref.is_fixed:
-			player_b_ref.ragdoll()
-			_do_pull(player_b_ref)
-		elif player_b_ref.is_fixed and !player_a_ref.is_fixed:
-			player_a_ref.ragdoll()
-			_do_pull(player_a_ref)
-
-func _do_pull(from_player: Player) -> void:
-	var sign = 1
-	if from_player == player_b_ref:
-		sign = -1
-	var looseness = 0
-	var direction = (player_b_ref.global_position - player_a_ref.global_position).normalized()
-	for segment in segments:
-		looseness += abs((direction - segment.global_basis.y).length())
-	var force = GameState.ROPE_PULL_FORCE_SCALE / max(1, looseness)
-	for segment in segments:
-		segment.apply_impulse(sign * segment.global_basis.y * force)
 
 func real_length() -> float:
 	var total = 0.0

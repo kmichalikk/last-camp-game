@@ -26,25 +26,25 @@ func _ready() -> void:
 	material = StandardMaterial3D.new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.albedo_color = Color(1, 1, 1, 0.5)
-	add_child(_create_helper_collision_shape(Vector3(1, 1, 1), Vector3.ZERO))
+	add_child(_create_helper_collision_shape(Vector3(1.05, 1.05, 1.05), Vector3.ZERO))
 	if can_stand:
 		_setup_stand_colliders()
 	if can_interact_north:
-		_setup_wall_interaction_action(Vector3(0.004, 1, 1), Vector3(0.502, 0, 0), &"tile_grab_north_highlight", &"tile_jump_off_north_highlight", Vector3(1, 0, 0))
+		_setup_wall_interaction_action(Vector3(0.01, 1, 1), Vector3(0.56, 0, 0), &"tile_grab_north_highlight", &"tile_jump_off_north_highlight", Vector3(1, 0, 0))
 	if can_interact_south:
-		_setup_wall_interaction_action(Vector3(0.004, 1, 1), Vector3(-0.502, 0, 0), &"tile_grab_south_highlight", &"tile_jump_off_south_highlight", Vector3(-1, 0, 0))
+		_setup_wall_interaction_action(Vector3(0.01, 1, 1), Vector3(-0.56, 0, 0), &"tile_grab_south_highlight", &"tile_jump_off_south_highlight", Vector3(-1, 0, 0))
 	if can_interact_east:
-		_setup_wall_interaction_action(Vector3(1, 1, 0.004), Vector3(0, 0, 0.502), &"tile_grab_east_highlight", &"tile_jump_off_east_highlight", Vector3(0, 0, 1))
+		_setup_wall_interaction_action(Vector3(1, 1, 0.01), Vector3(0, 0, 0.56), &"tile_grab_east_highlight", &"tile_jump_off_east_highlight", Vector3(0, 0, 1))
 	if can_interact_west:
-		_setup_wall_interaction_action(Vector3(1, 1, 0.004), Vector3(0, 0, -0.502), &"tile_grab_west_highlight", &"tile_jump_off_west_highlight", Vector3(0, 0, -1))
+		_setup_wall_interaction_action(Vector3(1, 1, 0.01), Vector3(0, 0, -0.56), &"tile_grab_west_highlight", &"tile_jump_off_west_highlight", Vector3(0, 0, -1))
 
 #region Stand action
 
 func _setup_stand_colliders():
-	tile_stand_highlight = _create_helper_mesh_instance(Vector3(1, 0.004, 1), Vector3(0, 0.502, 0))
+	tile_stand_highlight = _create_helper_mesh_instance(Vector3(1, 0.004, 1), Vector3(0, 0.504, 0))
 	var tile_stand_area = Area3D.new()
 	tile_stand_area.add_child(tile_stand_highlight)
-	tile_stand_area.add_child(_create_helper_collision_shape(Vector3(1, 0.004, 1), Vector3(0, 0.502, 0)))
+	tile_stand_area.add_child(_create_helper_collision_shape(Vector3(1, 0.01, 1), Vector3(0, 0.56, 0)))
 	tile_stand_area.mouse_entered.connect(Callable(self, &"_stand_mouse_enter"))
 	tile_stand_area.mouse_exited.connect(Callable(self, &"_stand_mouse_exit"))
 	tile_stand_area.input_event.connect(Callable(self, &"_stand_input_event"))
@@ -89,12 +89,24 @@ func _setup_wall_interaction_action(size: Vector3, position: Vector3, grab_targe
 
 func _wall_interaction_input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if any_input_event is InputEventMouse and any_input_event is InputEventMouseButton and any_input_event.is_pressed() and GameState.target_player:
-		if GameState.can_player_grab_tile(GameState.target_player, self, _normal):
-			GameState.target_player.grab(self, _normal)
-		elif GameState.can_player_jump_off_tile(GameState.target_player, self, _normal):
-			GameState.target_player.jump_off(self, _normal)
+		if _is_normal_allowed(_normal):
+			if GameState.can_player_grab_tile(GameState.target_player, self, _normal):
+				GameState.target_player.grab(self, _normal)
+			elif GameState.can_player_jump_off_tile(GameState.target_player, self, _normal):
+				GameState.target_player.jump_off(self, _normal)
 		if get_viewport():
 			get_viewport().set_input_as_handled()
+
+func _is_normal_allowed(normal: Vector3):
+	if normal.is_equal_approx(Vector3(1, 0, 0)):
+		return self.can_interact_north
+	elif normal.is_equal_approx(Vector3(-1, 0, 0)):
+		return self.can_interact_south
+	elif normal.is_equal_approx(Vector3(0, 0, 1)):
+		return self.can_interact_east
+	elif normal.is_equal_approx(Vector3(0, 0, -1)):
+		return self.can_interact_west
+	return false
 
 func _make_wall_interaction_mouse_enter(grab_target_mesh_var: StringName, jump_off_indicator_var: StringName, normal: Vector3) -> Callable:
 	return func():

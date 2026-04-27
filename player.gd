@@ -20,9 +20,8 @@ var player_below: Player = null
 var is_grabbing: bool = false
 var is_fixed: bool = false
 
-var _last_pull_time: float = 0.0
-
 var _move_tween: Tween
+var target_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	add_to_group("history")
@@ -65,11 +64,14 @@ func stand_on(target: Node3D):
 	if (target is Player):
 		target.player_above = self
 		player_below = target
-	elif player_below:
-		player_below.player_above = null
-		player_below = null
-		
-	_move_to_position_smoothly(target.global_position + Vector3.UP)
+		target_position = target.target_position + Vector3.UP
+		_move_to_position_smoothly(target_position)
+	else:
+		if player_below:
+			player_below.player_above = null
+			player_below = null
+		target_position = target.global_position + Vector3.UP
+		_move_to_position_smoothly(target_position)
 	
 	if (player_above != null):
 		if (!player_above.is_grabbing and GameState.can_player_stack_onto_player(player_above, self)):
@@ -99,6 +101,7 @@ func grab(block: Node3D, normal: Vector3) -> void:
 			if _snap_to_floor_if_possible(body):
 				return
 	else:
+		print(block, normal)
 		grab_indicator.visible = true
 		
 		_move_to_position_smoothly(block.global_position + normal)
@@ -137,12 +140,6 @@ func _move_to_position_smoothly(target_pos: Vector3, duration: float = 0.2) -> v
 	_move_tween.tween_property(self, "global_position", target_pos, duration)\
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_IN_OUT)
-
-func _input(event: InputEvent) -> void:
-	if GameState.target_player == self and event.is_action_pressed("pull"):
-		if attached_ropes.size() == 1 and Time.get_unix_time_from_system() - _last_pull_time > GameState.ROPE_PULL_COOLDOWN:
-			attached_ropes[0].pull(self)
-			_last_pull_time = Time.get_unix_time_from_system()
 
 func _input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if any_input_event is InputEventMouseButton and any_input_event.is_pressed():
