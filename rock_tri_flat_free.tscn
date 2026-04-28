@@ -11,8 +11,8 @@ collision_layer = 4
 collision_mask = 4
 script = ExtResource("2_vgcw0")
 can_stand = true
-can_grab_south = true
-can_grab_west = true
+can_interact_south = true
+can_interact_west = true
 
 [node name="rock_001111_w_corner2" parent="rock1" unique_id=1802936659 instance=ExtResource("3_m5of1")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
@@ -23,9 +23,9 @@ collision_layer = 4
 collision_mask = 4
 script = ExtResource("2_vgcw0")
 can_stand = true
-can_grab_north = true
-can_grab_south = true
-can_grab_east = true
+can_interact_north = true
+can_interact_south = true
+can_interact_east = true
 
 [node name="rock_0111112" parent="rock2" unique_id=318666982 instance=ExtResource("1_jjr6s")]
 transform = Transform3D(-2.1855694e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.1855694e-08, 0, 0, 0)
@@ -36,9 +36,9 @@ collision_layer = 4
 collision_mask = 4
 script = ExtResource("2_vgcw0")
 can_stand = true
-can_grab_north = true
-can_grab_west = true
-can_grab_east = true
+can_interact_north = true
+can_interact_west = true
+can_interact_east = true
 
 [node name="rock_0111112" parent="rock3" unique_id=1492818554 instance=ExtResource("1_jjr6s")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)

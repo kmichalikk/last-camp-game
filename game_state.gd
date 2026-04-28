@@ -4,7 +4,7 @@ extends Node
 signal selection_changed(new_player: Player)
 signal game_over()
 
-const PLAYER_SNAP_TO_FLOOR_DISTANCE = 1.3
+const PLAYER_SNAP_TO_FLOOR_DISTANCE = 1.5
 const ROPE_ALLOWED_STRETCH = 1.5
 
 var target_player: Player = null
@@ -48,8 +48,11 @@ func _target_is_reachable(player: Player, target: Node3D):
 
 	if abs_distance_to_target.y == 1 and abs_distance_to_target.x + abs_distance_to_target.z > 1:
 		return false
-
-	player.player_has_space_detector.global_position = target.global_position + Vector3.UP
+	
+	if target is Player:
+		player.player_has_space_detector.global_position = target.target_position + Vector3.UP
+	else:
+		player.player_has_space_detector.global_position = target.global_position + Vector3.UP
 	player.player_has_space_detector.force_shapecast_update()
 	if (player.player_has_space_detector.is_colliding()):
 		return false
@@ -87,15 +90,22 @@ func can_player_move_to_tile(player: Player, tile: RockBase):
 func can_player_grab_tile(player: Player, tile: RockBase, normal: Vector3):
 	if is_game_over:
 		return false
-		
+			
 	var distance = tile.global_position + normal - player.global_position
 	return distance.length() < 0.4
+
+func can_player_jump_off_tile(player: Player, tile: RockBase, normal: Vector3):
+	if is_game_over:
+		return false
+	if !player.is_fixed or player.is_grabbing or player.player_below != null:
+		return false
+	return tile.get_standing_player() == player
 
 func can_player_stack_onto_player(stacking_player: Player, base_player: Player):
 	if is_game_over:
 		return false
 	
-	return stacking_player != base_player and _target_is_reachable(stacking_player, base_player)
+	return stacking_player != base_player and base_player.is_fixed and _target_is_reachable(stacking_player, base_player)
 
 func snapshot() -> Variant:
 	return {

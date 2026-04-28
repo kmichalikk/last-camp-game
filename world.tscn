@@ -53,28 +53,30 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4, 
 
 [node name="rock_111111" parent="rocks" unique_id=1859325922 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 1)
+can_interact_north = true
+can_interact_east = true
 
 [node name="rock_111112" parent="rocks" unique_id=917113246 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 1)
-can_grab_north = true
-can_grab_south = true
-can_grab_west = true
-can_grab_east = true
+can_interact_north = true
+can_interact_south = true
+can_interact_west = true
+can_interact_east = true
 
 [node name="rock_111113" parent="rocks" unique_id=623029153 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 1)
-can_grab_north = true
-can_grab_south = true
-can_grab_west = true
-can_grab_east = true
+can_interact_north = true
+can_interact_south = true
+can_interact_west = true
+can_interact_east = true
 
 [node name="rock_111114" parent="rocks" unique_id=44156473 instance=ExtResource("3_aqk2v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3, -3)
 can_stand = true
-can_grab_north = true
-can_grab_south = true
-can_grab_west = true
-can_grab_east = true
+can_interact_north = true
+can_interact_south = true
+can_interact_west = true
+can_interact_east = true
 
 [node name="Node3D5" parent="rocks" unique_id=1828432527 instance=ExtResource("3_036b0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -7)

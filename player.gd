@@ -20,6 +20,9 @@ var player_below: Player = null
 var is_grabbing: bool = false
 var is_fixed: bool = false
 
+var _move_tween: Tween
+var target_position: Vector3 = Vector3.ZERO
+
 func _ready() -> void:
 	add_to_group("history")
 	
@@ -49,7 +52,8 @@ func _snap_to_floor_triggered(body: Node3D) -> void:
 	_snap_to_floor_if_possible(body)
 
 func _snap_to_floor_if_possible(body: Node3D) -> bool:
-	if ((body is RockBase and body.can_stand) or body is Player) \
+	if ((body is RockBase and body.can_stand and (!body.has_standing_player() || body.get_standing_player() == self)) \
+	 	or (body is Player and body.is_fixed and body.player_above == null)) \
 	and body.global_position.distance_squared_to(self.global_position) < GameState.PLAYER_SNAP_TO_FLOOR_DISTANCE:
 		stand_on(body)
 		return true
@@ -61,15 +65,20 @@ func stand_on(target: Node3D):
 	if (target is Player):
 		target.player_above = self
 		player_below = target
+		target_position = target.target_position + Vector3.UP
+		_move_to_position_smoothly(target_position)
 	else:
-		player_below = null
-	global_position = target.global_position + Vector3.UP
+		if player_below:
+			player_below.player_above = null
+			player_below = null
+		target_position = target.global_position + Vector3.UP
+		_move_to_position_smoothly(target_position)
+	
 	if (player_above != null):
 		if (!player_above.is_grabbing and GameState.can_player_stack_onto_player(player_above, self)):
 			player_above.stand_on(self)
 		else:
 			detach_player_above()
-	freeze = true
 	is_fixed = true
 	History.action_performed.emit()
 
@@ -94,11 +103,33 @@ func grab(block: Node3D, normal: Vector3) -> void:
 				return
 	else:
 		grab_indicator.visible = true
-		global_position = block.global_position + normal
+		
+		_move_to_position_smoothly(block.global_position + normal)
+		
 		is_grabbing = true
 		is_fixed = true
-		freeze = true
 
+func jump_off(tile: Node3D, normal: Vector3) -> void:
+	if is_grabbing or !is_fixed or player_below != null:
+		return
+		
+	_move_to_position_smoothly(tile.global_position + normal + 0.5 * Vector3.UP)
+	await _move_tween.finished
+	
+	detach_player_above()
+	is_fixed = false
+	freeze = false
+
+func _move_to_position_smoothly(target_pos: Vector3, duration: float = 0.2) -> void:
+	if _move_tween and _move_tween.is_valid():
+		_move_tween.kill()
+
+	freeze = true 
+	
+	_move_tween = create_tween()
+	_move_tween.tween_property(self, "global_position", target_pos, duration)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
 
 func _input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if any_input_event is InputEventMouseButton and any_input_event.is_pressed():
