@@ -102,7 +102,6 @@ func grab(block: Node3D, normal: Vector3) -> void:
 			if _snap_to_floor_if_possible(body):
 				return
 	else:
-		print(block, normal)
 		grab_indicator.visible = true
 		
 		_move_to_position_smoothly(block.global_position + normal)
