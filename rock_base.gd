@@ -26,7 +26,7 @@ func _ready() -> void:
 	material = StandardMaterial3D.new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.albedo_color = Color(1, 1, 1, 0.5)
-	add_child(_create_helper_collision_shape(Vector3(1.05, 1.05, 1.05), Vector3.ZERO))
+	material.no_depth_test = true
 	if can_stand:
 		_setup_stand_colliders()
 	if can_interact_north:
