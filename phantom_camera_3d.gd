@@ -30,13 +30,21 @@ func _input(event: InputEvent) -> void:
 
 func _rotate_camera(angle_degrees: float) -> void:
 	_is_rotating = true
+
+	follow_damping = false
+
 	var target_rotation_y = rotation.y + deg_to_rad(angle_degrees)
 
 	var tween = create_tween()
 	tween.set_trans(Tween.TRANS_QUART)
 	tween.set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "rotation:y", target_rotation_y, rotation_duration)
-	tween.finished.connect(func(): _is_rotating = false)
+
+	tween.finished.connect(_on_tween_finish)
+
+func _on_tween_finish() -> void:
+	_is_rotating = false
+	follow_damping = true
 
 func _on_game_over() -> void:
 	is_frozen = true
