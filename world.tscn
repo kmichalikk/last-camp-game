@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b85qxlntn56gl"]
 
 [ext_resource type="PackedScene" uid="uid://ddawamlyv4wii" path="res://player.tscn" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://c2kisf7unyh6b" path="res://world.gd" id="1_wse8f"]
 [ext_resource type="PackedScene" uid="uid://bv20lwjb6q2fl" path="res://rope.tscn" id="3_tlwt5"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_pkg7o"]
 [ext_resource type="PackedScene" uid="uid://i4ddmj588o02" path="res://assets/starting_world.glb" id="6_dwbse"]
@@ -8,6 +9,17 @@
 [ext_resource type="PackedScene" uid="uid://660nj4dnt0dv" path="res://ground_collider.tscn" id="7_gbfbk"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_pkg7o"]
 [ext_resource type="Texture2D" uid="uid://c1u0hnc30swkc" path="res://assets/kloofendal_48d_partly_cloudy_puresky_1k.exr" id="8_gbfbk"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="10_ic0uy"]
+
+[sub_resource type="Curve3D" id="Curve3D_wse8f"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -46.77, 5, 0, -12.013319, -0.035202026, 0.11753082, 12.013319, 0.035202026, -0.11753082, -17.005733, -2.1470547, 6.6171303, -2.5932817, -0.49250507, 8.415792, 2.5932817, 0.49250507, -8.415792, 6.1622615, -1.052103, 1.4862881, 0.78432393, -0.053216457, 0.98399734, -0.78432393, 0.053216457, -0.98399734, 4.004966, -2.4842834, -13.394192),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="Resource" id="Resource_wse8f"]
+script = ExtResource("7_pkg7o")
 
 [sub_resource type="Resource" id="Resource_gbfbk"]
 script = ExtResource("7_pkg7o")
@@ -28,6 +40,7 @@ ambient_light_energy = 0.1
 reflected_light_source = 1
 
 [node name="World" type="Node3D" unique_id=2081898281]
+script = ExtResource("1_wse8f")
 
 [node name="BluePlayer" parent="." unique_id=1513608525 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -35,7 +48,7 @@ attached_ropes = [NodePath("../RopeBlueYellow"), NodePath("../RopeBlueMagenta")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=580584148]
 physics_interpolation_mode = 1
-transform = Transform3D(0.70710254, -0.49999538, 0.49999747, 0, 0.7071003, 0.70710325, -0.70710254, -0.49999538, 0.49999747, 3.9999797, 6.656826, 3.9999797)
+transform = Transform3D(0.34842044, 0.23885182, -0.90639555, 7.450581e-09, 0.96698874, 0.2548192, 0.93733835, -0.08878423, 0.33691865, -46.764267, 14.147055, 17.38287)
 top_level = true
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D" unique_id=1775444176]
@@ -54,13 +67,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
 player_color = Color(1, 0.36719185, 0.5659509, 1)
 attached_ropes = [NodePath("../RopeBlueMagenta")]
 
+[node name="IntroCameraPath" type="Path3D" parent="." unique_id=178004694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0057344437, 9.147055, 17.38287)
+curve = SubResource("Curve3D_wse8f")
+
+[node name="IntroCameraPathFollow" type="PathFollow3D" parent="IntroCameraPath" unique_id=893762302]
+transform = Transform3D(0.9999189, 0, 0, 0, 0.9999954, 0, 0, 0, 0.99999535, -46.77, 5, 0)
+rotation_mode = 0
+
+[node name="IntroPhantomCamera" type="Node3D" parent="IntroCameraPath/IntroCameraPathFollow" unique_id=1274858501 node_paths=PackedStringArray("look_at_target")]
+transform = Transform3D(0.34842044, 0.23885182, -0.90639555, 7.450581e-09, 0.96698874, 0.2548192, 0.93733835, -0.08878423, 0.33691865, 0, 0, 0)
+script = ExtResource("10_ic0uy")
+priority = 10
+look_at_mode = 2
+look_at_target = NodePath("../../../BluePlayer")
+tween_resource = SubResource("Resource_wse8f")
+tween_on_load = false
+align_transform_with_view = Callable()
+align_rotation_with_view = Callable()
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
 [node name="PhantomCamera3D" type="Node3D" parent="." unique_id=2070390006 node_paths=PackedStringArray("follow_targets")]
 transform = Transform3D(0.70710254, -0.49999538, 0.49999747, 0, 0.7071003, 0.70710325, -0.70710254, -0.49999538, 0.49999747, 3.9999797, 6.656826, 3.9999797)
 top_level = true
 script = ExtResource("6_pkg7o")
+priority = 5
 follow_mode = 3
 follow_targets = [NodePath("../BluePlayer"), NodePath("../YellowPlayer"), NodePath("../MagentaPlayer")]
 tween_resource = SubResource("Resource_gbfbk")
+tween_on_load = false
 follow_damping = true
 follow_damping_value = Vector3(0.25, 0.25, 0.25)
 auto_follow_distance = true
