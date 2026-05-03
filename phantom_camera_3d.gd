@@ -29,9 +29,9 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("camera_rotate_left"):
-		_rotate_camera(PI / 2.0)
-	elif event.is_action_pressed("camera_rotate_right"):
 		_rotate_camera(-PI / 2.0)
+	elif event.is_action_pressed("camera_rotate_right"):
+		_rotate_camera(PI / 2.0)
 
 func _rotate_camera(angle_rad: float) -> void:
 	_target_rotation_y += angle_rad
