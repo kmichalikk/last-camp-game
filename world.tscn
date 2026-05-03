@@ -58,6 +58,7 @@ attached_ropes = [NodePath("../RopeBlueMagenta")]
 transform = Transform3D(0.70710254, -0.49999538, 0.49999747, 0, 0.7071003, 0.70710325, -0.70710254, -0.49999538, 0.49999747, 3.9999797, 6.656826, 3.9999797)
 top_level = true
 script = ExtResource("6_pkg7o")
+rotation_duration = null
 follow_mode = 3
 follow_targets = [NodePath("../BluePlayer"), NodePath("../YellowPlayer"), NodePath("../MagentaPlayer")]
 tween_resource = SubResource("Resource_gbfbk")
