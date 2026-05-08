@@ -119,6 +119,7 @@ func _make_alignment_basis(direction: Vector3) -> Basis:
 func _make_rope_segment(position: Vector3) -> RigidBody3D:
 	var segment = RigidBody3D.new()
 	segment.continuous_cd = true
+	segment.can_sleep = false
 	
 	var physics_mat = PhysicsMaterial.new()
 	physics_mat.friction = 0.1

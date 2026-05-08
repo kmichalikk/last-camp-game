@@ -7,10 +7,13 @@
 [ext_resource type="PackedScene" uid="uid://i4ddmj588o02" path="res://assets/starting_world.glb" id="6_dwbse"]
 [ext_resource type="Script" uid="uid://bcsjq7vfy5t84" path="res://phantom_camera_3d.gd" id="6_pkg7o"]
 [ext_resource type="PackedScene" uid="uid://660nj4dnt0dv" path="res://ground_collider.tscn" id="7_gbfbk"]
+[ext_resource type="PackedScene" uid="uid://dryq1252c5ms0" path="res://assets/crystal.glb" id="7_k3n1d"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_pkg7o"]
 [ext_resource type="Texture2D" uid="uid://c1u0hnc30swkc" path="res://assets/kloofendal_48d_partly_cloudy_puresky_1k.exr" id="8_gbfbk"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="10_ic0uy"]
 [ext_resource type="PackedScene" path="res://breakable_rock.tscn" id="breakable_rock_res"]
+[ext_resource type="PackedScene" uid="uid://dw56q87dogia0" path="res://assets/small_rocks.glb" id="12_2o6r5"]
+[ext_resource type="PackedScene" uid="uid://c4yb7w7icoofv" path="res://fireplace.tscn" id="12_k3n1d"]
 
 [sub_resource type="Curve3D" id="Curve3D_wse8f"]
 _data = {
@@ -85,7 +88,7 @@ transform = Transform3D(0.9999189, 0, 0, 0, 0.9999954, 0, 0, 0, 0.99999535, -46.
 rotation_mode = 0
 
 [node name="IntroPhantomCamera" type="Node3D" parent="IntroCameraPath/IntroCameraPathFollow" unique_id=1274858501 node_paths=PackedStringArray("look_at_target")]
-transform = Transform3D(0.3484204, 0.23885182, -0.90639544, 7.45058e-09, 0.96698874, 0.25481918, 0.9373383, -0.08878423, 0.33691862, 0, 0, 0)
+transform = Transform3D(0.3484204, 0.23885182, -0.9063955, 7.45058e-09, 0.96698874, 0.25481918, 0.9373383, -0.08878423, 0.33691862, 0, 0, 0)
 script = ExtResource("10_ic0uy")
 priority = 10
 look_at_mode = 2
@@ -119,6 +122,53 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="StartingWorld" type="Node3D" parent="Levels" unique_id=1543789150]
 
+[node name="decorations" type="Node3D" parent="Levels/StartingWorld" unique_id=797007582]
+
+[node name="small_rocks" parent="Levels/StartingWorld/decorations" unique_id=1198223975 instance=ExtResource("12_2o6r5")]
+transform = Transform3D(-5.9604645e-08, 0, -1, 0, 1, 0, 1, 0, -5.9604645e-08, -4, 0.5, -4)
+
+[node name="small_rocks3" parent="Levels/StartingWorld/decorations" unique_id=1235421878 instance=ExtResource("12_2o6r5")]
+transform = Transform3D(-5.9604645e-08, 0, -1, 0, 1, 0, 1, 0, -5.9604645e-08, -8, 1.5, 0)
+
+[node name="small_rocks6" parent="Levels/StartingWorld/decorations" unique_id=832524200 instance=ExtResource("12_2o6r5")]
+transform = Transform3D(-1.0606604, 0, -1.0606604, 0, 1.5000002, 0, 1.0606604, 0, -1.0606604, -8, 1.5, 7)
+
+[node name="small_rocks4" parent="Levels/StartingWorld/decorations" unique_id=1615191918 instance=ExtResource("12_2o6r5")]
+transform = Transform3D(0.9659258, 0, 0.25881904, 0, 1, 0, -0.25881904, 0, 0.9659258, -14, 2.5, 2)
+
+[node name="small_rocks2" parent="Levels/StartingWorld/decorations" unique_id=1142542518 instance=ExtResource("12_2o6r5")]
+transform = Transform3D(1.1920929e-07, 0, 1, 0, 1, 0, -1, 0, 1.1920929e-07, -5, 0.5, -3)
+
+[node name="small_rocks5" parent="Levels/StartingWorld/decorations" unique_id=1598864695 instance=ExtResource("12_2o6r5")]
+transform = Transform3D(-1, 0, 1.7682974e-07, 0, 1, 0, -1.7682974e-07, 0, -1, 1, 0.5, -1)
+
+[node name="crystal" parent="Levels/StartingWorld/decorations" unique_id=1007047250 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -14.766357, 2.5, 3.6780005)
+
+[node name="crystal3" parent="Levels/StartingWorld/decorations" unique_id=2066575574 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(0.7043519, -0.0031946914, 0.7098438, -0.6787586, 0.2896842, 0.67481095, -0.20778634, -0.9571169, 0.20187113, -14.939286, 2.5, 4.5719457)
+
+[node name="crystal2" parent="Levels/StartingWorld/decorations" unique_id=53601599 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(0.70710677, 0, 0.70710677, -0.26109493, 0.9293325, 0.26109493, -0.6571373, -0.369244, 0.6571373, -15.517712, 2.5, 4.450651)
+
+[node name="crystal4" parent="Levels/StartingWorld/decorations" unique_id=1509200501 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(-0.65031016, -0.6293115, 0.42551553, 1.3690442e-08, -0.56013304, -0.8284026, 0.75966877, -0.53871876, 0.36426032, -14.567059, 6.355973, 7.3779306)
+
+[node name="crystal5" parent="Levels/StartingWorld/decorations" unique_id=1210587771 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(-0.16883339, 0, -0.9856446, 0, 1, 0, 0.9856446, 0, -0.16883339, -14.866484, 4.523447, 8.017502)
+
+[node name="crystal6" parent="Levels/StartingWorld/decorations" unique_id=1741129886 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(0.22226325, 0, -0.9749866, 0, 1, 0, 0.9749866, 0, 0.22226325, -14.82549, 4.3838573, 10.830301)
+
+[node name="crystal8" parent="Levels/StartingWorld/decorations" unique_id=1543876333 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(0.2577335, -0.1197374, -0.9587682, 0.9288892, 0.30385017, 0.21175462, 0.26596695, -0.94516575, 0.18953511, -13.815186, 4.619146, 17.469128)
+
+[node name="crystal7" parent="Levels/StartingWorld/decorations" unique_id=1217712464 instance=ExtResource("7_k3n1d")]
+transform = Transform3D(0.060001776, 0.16587901, -0.98431903, -0.7011575, -0.69485927, -0.15983967, -0.7104773, 0.69975346, 0.07461454, -15.545976, 6.5246453, 11.611477)
+
+[node name="Fireplace" parent="Levels/StartingWorld/decorations" unique_id=1875510113 instance=ExtResource("12_k3n1d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.6, 0)
+
 [node name="starting_world" parent="Levels/StartingWorld" unique_id=1760107174 instance=ExtResource("6_dwbse")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -8, 1, 4)
 
@@ -145,7 +195,6 @@ can_stand = true
 
 [node name="InvisibleBox6" parent="Levels/StartingWorld/colliders" unique_id=1672499390 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1)
-can_stand = true
 
 [node name="InvisibleBox7" parent="Levels/StartingWorld/colliders" unique_id=1732250046 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -2)
@@ -1708,7 +1757,6 @@ can_stand = true
 
 [node name="InvisibleBox136" parent="Levels/StartingWorld/colliders" unique_id=1200224195 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, 6)
-can_stand = true
 
 [node name="InvisibleBox137" parent="Levels/StartingWorld/colliders" unique_id=752307245 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, 5)
@@ -1732,7 +1780,6 @@ can_stand = true
 
 [node name="InvisibleBox142" parent="Levels/StartingWorld/colliders" unique_id=1700303351 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, 0)
-can_stand = true
 
 [node name="InvisibleBox143" parent="Levels/StartingWorld/colliders" unique_id=1016145222 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, -1)
@@ -1786,7 +1833,6 @@ can_stand = true
 
 [node name="InvisibleBox153" parent="Levels/StartingWorld/colliders" unique_id=308706176 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1, 7)
-can_stand = true
 
 [node name="InvisibleBox156" parent="Levels/StartingWorld/colliders" unique_id=173353775 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2, 8)
@@ -2148,7 +2194,6 @@ can_interact_south = true
 
 [node name="InvisibleBox299" parent="Levels/StartingWorld/colliders" unique_id=346153251 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 4, 11)
-can_stand = true
 
 [node name="InvisibleBox300" parent="Levels/StartingWorld/colliders" unique_id=458934411 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 4, 11)
@@ -2560,7 +2605,6 @@ can_interact_west = true
 
 [node name="InvisibleBox186" parent="Levels/StartingWorld/colliders" unique_id=926848475 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 2, 2)
-can_stand = true
 
 [node name="InvisibleBox187" parent="Levels/StartingWorld/colliders" unique_id=414167559 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 2, 3)
@@ -2713,7 +2757,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2, 9)
 
 [node name="InvisibleBox108" parent="Levels/StartingWorld/colliders" unique_id=722855700 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 7)
-can_stand = true
 
 [node name="InvisibleBox109" parent="Levels/StartingWorld/colliders" unique_id=902338316 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 6)
@@ -2843,7 +2886,6 @@ can_interact_east = true
 
 [node name="InvisibleBox18" parent="Levels/StartingWorld/colliders" unique_id=898999302 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
-can_stand = true
 
 [node name="InvisibleBox19" parent="Levels/StartingWorld/colliders" unique_id=696049932 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -1)
@@ -2940,7 +2982,6 @@ can_interact_west = true
 
 [node name="InvisibleBox42" parent="Levels/StartingWorld/colliders" unique_id=1059101361 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -4)
-can_stand = true
 can_interact_north = true
 can_interact_west = true
 
@@ -2962,7 +3003,6 @@ can_stand = true
 
 [node name="InvisibleBox53" parent="Levels/StartingWorld/colliders" unique_id=810252732 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -3)
-can_stand = true
 
 [node name="InvisibleBox54" parent="Levels/StartingWorld/colliders" unique_id=2127047684 instance=ExtResource("7_gbfbk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
@@ -3026,3 +3066,13 @@ transform = Transform3D(0.49999997, -0.43301317, 0.74999994, 0, 0.8660253, 0.500
 light_energy = 1.5
 light_indirect_energy = 1.5
 shadow_enabled = true
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1807040712]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.36534, 5.5660143, 13.705114)
+light_color = Color(0.8388255, 0.69033515, 0.8693632, 1)
+omni_range = 3.691434
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="." unique_id=1408836839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.57715, 5.423151, 7.991366)
+light_color = Color(0.8388255, 0.69033515, 0.8693632, 1)
+omni_range = 3.3407857
