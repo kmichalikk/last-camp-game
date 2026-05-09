@@ -8,6 +8,8 @@ class_name RockBase
 @export var can_interact_west: bool = false
 @export var can_interact_east: bool = false
 
+var actions_enabled: bool = true
+
 var tile_stand_highlight: MeshInstance3D = null
 var tile_grab_north_highlight: MeshInstance3D = null
 var tile_grab_south_highlight: MeshInstance3D = null
@@ -20,6 +22,11 @@ var tile_jump_off_east_highlight: Sprite3D = null
 
 var top_occupancy_zone: Area3D = null
 var material: StandardMaterial3D = null
+
+var _interactive_action_areas: Array[Area3D] = []
+var _occupancy_areas: Array[Area3D] = []
+var _action_collision_shapes: Array[CollisionShape3D] = []
+var _highlight_nodes: Array[Node3D] = []
 
 func _ready() -> void:
 	GameState.selection_changed.connect(_on_selection_changed)
@@ -48,6 +55,7 @@ func _setup_stand_colliders():
 	tile_stand_area.mouse_entered.connect(Callable(self, &"_stand_mouse_enter"))
 	tile_stand_area.mouse_exited.connect(Callable(self, &"_stand_mouse_exit"))
 	tile_stand_area.input_event.connect(Callable(self, &"_stand_input_event"))
+	_interactive_action_areas.push_back(tile_stand_area)
 	add_child(tile_stand_area)
 
 	top_occupancy_zone = Area3D.new()
@@ -55,9 +63,12 @@ func _setup_stand_colliders():
 	top_occupancy_zone.input_ray_pickable = false
 	top_occupancy_zone.add_child(_create_helper_mesh_instance(Vector3(0.9, 0.9, 0.9), Vector3(0, 1, 0)))
 	top_occupancy_zone.add_child(_create_helper_collision_shape(Vector3(0.9, 0.9, 0.9), Vector3(0, 1, 0)))
+	_occupancy_areas.push_back(top_occupancy_zone)
 	add_child(top_occupancy_zone)
 
 func _stand_input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
+	if !actions_enabled:
+		return
 	if any_input_event is InputEventMouse:
 		if any_input_event is InputEventMouseButton and any_input_event.is_pressed() and GameState.target_player and GameState.can_player_move_to_tile(GameState.target_player, self):
 			GameState.target_player.stand_on(self)
@@ -65,7 +76,7 @@ func _stand_input_event(_camera: Camera3D, any_input_event: InputEvent, _positio
 				get_viewport().set_input_as_handled()
 
 func _stand_mouse_enter() -> void:
-	if GameState.target_player != null and GameState.can_player_move_to_tile(GameState.target_player, self):
+	if actions_enabled and GameState.target_player != null and GameState.can_player_move_to_tile(GameState.target_player, self):
 		tile_stand_highlight.visible = true
 
 func _stand_mouse_exit() -> void:
@@ -85,9 +96,12 @@ func _setup_wall_interaction_action(size: Vector3, position: Vector3, grab_targe
 	tile_wall_interaction_area.mouse_entered.connect(_make_wall_interaction_mouse_enter(grab_target_mesh_var, jump_off_indicator_var, self.global_transform.basis * normal))
 	tile_wall_interaction_area.mouse_exited.connect(_make_wall_interaction_mouse_exit(grab_target_mesh_var, jump_off_indicator_var))
 	tile_wall_interaction_area.input_event.connect(Callable(self, &"_wall_interaction_input_event"))
+	_interactive_action_areas.push_back(tile_wall_interaction_area)
 	add_child(tile_wall_interaction_area)
 
 func _wall_interaction_input_event(_camera: Camera3D, any_input_event: InputEvent, _position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
+	if !actions_enabled:
+		return
 	if any_input_event is InputEventMouse and any_input_event is InputEventMouseButton and any_input_event.is_pressed() and GameState.target_player:
 		if _is_normal_allowed(_normal):
 			if GameState.can_player_grab_tile(GameState.target_player, self, _normal):
@@ -110,7 +124,7 @@ func _is_normal_allowed(normal: Vector3):
 
 func _make_wall_interaction_mouse_enter(grab_target_mesh_var: StringName, jump_off_indicator_var: StringName, normal: Vector3) -> Callable:
 	return func():
-		if GameState.target_player == null:
+		if !actions_enabled or GameState.target_player == null:
 			return
 		if GameState.can_player_grab_tile(GameState.target_player, self, normal):
 			self[grab_target_mesh_var].visible = true
@@ -131,8 +145,9 @@ func _create_helper_mesh_instance(size: Vector3, position: Vector3) -> MeshInsta
 	instance.position = position
 	instance.mesh.material = self.material
 	instance.visible = false
+	_highlight_nodes.push_back(instance)
 	return instance
-	
+
 func _create_helper_sprite_instance(position: Vector3) -> Sprite3D:
 	var instance = Sprite3D.new()
 	instance.position = position
@@ -142,6 +157,7 @@ func _create_helper_sprite_instance(position: Vector3) -> Sprite3D:
 	instance.visible = false
 	instance.centered = true
 	instance.pixel_size = 0.4
+	_highlight_nodes.push_back(instance)
 	return instance
 
 func _create_helper_collision_shape(size: Vector3, position: Vector3) -> CollisionShape3D:
@@ -149,10 +165,37 @@ func _create_helper_collision_shape(size: Vector3, position: Vector3) -> Collisi
 	collision_shape.shape = BoxShape3D.new()
 	collision_shape.shape.size = size + Vector3(0.05, 0.05, 0.05)
 	collision_shape.position = position
+	_action_collision_shapes.push_back(collision_shape)
 	return collision_shape
 
+func is_available() -> bool:
+	return actions_enabled
+
+func set_actions_enabled(enabled: bool) -> void:
+	actions_enabled = enabled
+	for area in _interactive_action_areas:
+		if is_instance_valid(area):
+			area.monitoring = enabled
+			area.monitorable = enabled
+			area.input_ray_pickable = enabled
+	for area in _occupancy_areas:
+		if is_instance_valid(area):
+			area.monitoring = enabled
+			area.monitorable = enabled
+			area.input_ray_pickable = false
+	for collision_shape in _action_collision_shapes:
+		if is_instance_valid(collision_shape):
+			collision_shape.disabled = !enabled
+	if !enabled:
+		hide_action_highlights()
+
+func hide_action_highlights() -> void:
+	for node in _highlight_nodes:
+		if is_instance_valid(node):
+			node.visible = false
+
 func get_standing_player() -> Player:
-	if top_occupancy_zone == null:
+	if !actions_enabled or top_occupancy_zone == null:
 		return null
 	for body in top_occupancy_zone.get_overlapping_bodies():
 		if body is Player:
@@ -160,9 +203,21 @@ func get_standing_player() -> Player:
 	return null
 
 func has_standing_player() -> bool:
-	return can_stand and top_occupancy_zone.has_overlapping_bodies()
+	return actions_enabled and can_stand and top_occupancy_zone != null and top_occupancy_zone.has_overlapping_bodies()
+
+func on_player_stand_started(_player: Player) -> void:
+	pass
+
+func on_player_stand_ended(_player: Player) -> void:
+	pass
+
+func on_player_grab_started(_player: Player, _normal: Vector3) -> void:
+	pass
+
+func on_player_grab_ended(_player: Player, _normal: Vector3) -> void:
+	pass
 
 func _on_selection_changed(new_player: Player):
-	if new_player != null:
+	if actions_enabled and new_player != null:
 		var target_color = GameState.target_player.player_color
 		self.material.albedo_color = Color(target_color.r, target_color.g, target_color.b, material.albedo_color.a)

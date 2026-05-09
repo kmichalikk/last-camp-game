@@ -17,6 +17,10 @@ class_name Player
 var player_above: Player = null
 var player_below: Player = null
 
+var standing_on: Node3D = null
+var grabbed_block: RockBase = null
+var grabbed_normal: Vector3 = Vector3.ZERO
+
 var is_grabbing: bool = false
 var is_fixed: bool = false
 
@@ -25,7 +29,7 @@ var target_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	add_to_group("history")
-	
+
 	material.albedo_color = player_color
 	material.emission = player_color
 	material.emission_enabled = false
@@ -52,7 +56,7 @@ func _snap_to_floor_triggered(body: Node3D) -> void:
 	_snap_to_floor_if_possible(body)
 
 func _snap_to_floor_if_possible(body: Node3D) -> bool:
-	if ((body is RockBase and body.can_stand and (!body.has_standing_player() || body.get_standing_player() == self)) \
+	if ((body is RockBase and body.is_available() and body.can_stand and (!body.has_standing_player() || body.get_standing_player() == self)) \
 	 	or (body is Player and body.is_fixed and body.player_above == null)) \
 	and body.global_position.distance_squared_to(self.global_position) < GameState.PLAYER_SNAP_TO_FLOOR_DISTANCE:
 		stand_on(body)
@@ -62,18 +66,22 @@ func _snap_to_floor_if_possible(body: Node3D) -> bool:
 func stand_on(target: Node3D):
 	if is_grabbing:
 		return
+
+	_set_standing_on(target)
+
+	if player_below != null and player_below != target:
+		player_below.player_above = null
+		player_below = null
+
 	if (target is Player):
 		target.player_above = self
 		player_below = target
 		target_position = target.target_position + Vector3.UP
 		_move_to_position_smoothly(target_position)
 	else:
-		if player_below:
-			player_below.player_above = null
-			player_below = null
 		target_position = target.global_position + Vector3.UP
 		_move_to_position_smoothly(target_position)
-	
+
 	if (player_above != null):
 		if (!player_above.is_grabbing and GameState.can_player_stack_onto_player(player_above, self)):
 			player_above.stand_on(self)
@@ -89,43 +97,85 @@ func detach_player_above():
 		player_above.freeze = false
 		player_above.is_fixed = false
 		player_above.detach_player_above()
+	if player_above.standing_on == self:
+		player_above.standing_on = null
 	player_above.player_below = null
 	player_above = null
 
-func grab(block: Node3D, normal: Vector3) -> void:
+func grab(block: RockBase, normal: Vector3) -> void:
 	if is_grabbing:
-		grab_indicator.visible = false
-		is_grabbing = false
-		is_fixed = false
-		freeze = false
+		_end_grab()
 		for body in snap_to_floor_detector.get_overlapping_bodies():
 			if _snap_to_floor_if_possible(body):
 				return
+		History.action_performed.emit()
 	else:
+		if !block.is_available():
+			return
+
+		if standing_on != null:
+			_set_standing_on(null)
+		if player_below != null:
+			player_below.player_above = null
+			player_below = null
+
 		grab_indicator.visible = true
-		
+
 		_move_to_position_smoothly(block.global_position + normal)
-		
+
+		grabbed_block = block
+		grabbed_normal = normal
+		block.on_player_grab_started(self, normal)
 		is_grabbing = true
 		is_fixed = true
+		History.action_performed.emit()
+
+func _end_grab() -> void:
+	var released_block = grabbed_block
+	var released_normal = grabbed_normal
+
+	grab_indicator.visible = false
+	is_grabbing = false
+	is_fixed = false
+	freeze = false
+	grabbed_block = null
+	grabbed_normal = Vector3.ZERO
+
+	if released_block != null and is_instance_valid(released_block):
+		released_block.on_player_grab_ended(self, released_normal)
 
 func jump_off(tile: Node3D, normal: Vector3) -> void:
 	if is_grabbing or !is_fixed or player_below != null:
 		return
-		
+
 	_move_to_position_smoothly(tile.global_position + normal + 0.5 * Vector3.UP)
 	await _move_tween.finished
-	
+
+	if standing_on != null:
+		_set_standing_on(null)
 	detach_player_above()
 	is_fixed = false
 	freeze = false
+	History.action_performed.emit()
+
+func _set_standing_on(target: Node3D) -> void:
+	if standing_on == target:
+		return
+
+	var previous_target = standing_on
+	standing_on = target
+
+	if previous_target is RockBase and is_instance_valid(previous_target):
+		previous_target.on_player_stand_ended(self)
+	if target is RockBase:
+		target.on_player_stand_started(self)
 
 func _move_to_position_smoothly(target_pos: Vector3, duration: float = 0.2) -> void:
 	if _move_tween and _move_tween.is_valid():
 		_move_tween.kill()
 
-	freeze = true 
-	
+	freeze = true
+
 	_move_tween = create_tween()
 	_move_tween.tween_property(self, "global_position", target_pos, duration)\
 		.set_trans(Tween.TRANS_SINE)\
@@ -170,6 +220,9 @@ func snapshot() -> Variant:
 	return {
 		"player_above": player_above,
 		"player_below": player_below,
+		"standing_on": standing_on,
+		"grabbed_block": grabbed_block,
+		"grabbed_normal": grabbed_normal,
 		"is_grabbing": is_grabbing,
 		"is_fixed": is_fixed,
 		"global_transform": global_transform
@@ -178,6 +231,9 @@ func snapshot() -> Variant:
 func restore_from_snapshot(data: Variant):
 	player_above = data.player_above
 	player_below = data.player_below
+	standing_on = data.standing_on
+	grabbed_block = data.grabbed_block
+	grabbed_normal = data.grabbed_normal
 	is_grabbing = data.is_grabbing
 	grab_indicator.visible = is_grabbing
 	is_fixed = data.is_fixed
