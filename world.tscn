@@ -42,7 +42,6 @@ reflected_light_source = 1
 
 [node name="World" type="Node3D" unique_id=2081898281]
 script = ExtResource("1_wse8f")
-skip_intro_animation = true
 
 [node name="BluePlayer" parent="." unique_id=1513608525 node_paths=PackedStringArray("attached_ropes") instance=ExtResource("1_f3sb7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -86,7 +85,7 @@ transform = Transform3D(0.9999189, 0, 0, 0, 0.9999954, 0, 0, 0, 0.99999535, -46.
 rotation_mode = 0
 
 [node name="IntroPhantomCamera" type="Node3D" parent="IntroCameraPath/IntroCameraPathFollow" unique_id=1274858501 node_paths=PackedStringArray("look_at_target")]
-transform = Transform3D(0.3484204, 0.23885182, -0.9063955, 7.45058e-09, 0.96698874, 0.25481918, 0.9373383, -0.08878423, 0.33691862, 0, 0, 0)
+transform = Transform3D(0.3484204, 0.23885182, -0.90639544, 7.45058e-09, 0.96698874, 0.25481918, 0.9373383, -0.08878423, 0.33691862, 0, 0, 0)
 script = ExtResource("10_ic0uy")
 priority = 10
 look_at_mode = 2
