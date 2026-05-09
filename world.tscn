@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="7_pkg7o"]
 [ext_resource type="Texture2D" uid="uid://c1u0hnc30swkc" path="res://assets/kloofendal_48d_partly_cloudy_puresky_1k.exr" id="8_gbfbk"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="10_ic0uy"]
+[ext_resource type="PackedScene" path="res://breakable_rock.tscn" id="breakable_rock_res"]
 
 [sub_resource type="Curve3D" id="Curve3D_wse8f"]
 _data = {
@@ -46,6 +47,14 @@ script = ExtResource("1_wse8f")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 attached_ropes = [NodePath("../RopeBlueYellow"), NodePath("../RopeBlueMagenta")]
 
+[node name="TestBreakable" parent="." unique_id=902004874 instance=ExtResource("breakable_rock_res")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1, 1)
+can_stand = true
+can_interact_north = true
+can_interact_south = true
+can_interact_west = true
+can_interact_east = true
+
 [node name="Camera3D" type="Camera3D" parent="." unique_id=580584148]
 physics_interpolation_mode = 1
 transform = Transform3D(0.34842044, 0.23885182, -0.90639555, 7.450581e-09, 0.96698874, 0.2548192, 0.93733835, -0.08878423, 0.33691865, -46.764267, 14.147055, 17.38287)
@@ -76,7 +85,7 @@ transform = Transform3D(0.9999189, 0, 0, 0, 0.9999954, 0, 0, 0, 0.99999535, -46.
 rotation_mode = 0
 
 [node name="IntroPhantomCamera" type="Node3D" parent="IntroCameraPath/IntroCameraPathFollow" unique_id=1274858501 node_paths=PackedStringArray("look_at_target")]
-transform = Transform3D(0.34842044, 0.23885182, -0.90639555, 7.450581e-09, 0.96698874, 0.2548192, 0.93733835, -0.08878423, 0.33691865, 0, 0, 0)
+transform = Transform3D(0.3484204, 0.23885182, -0.90639544, 7.45058e-09, 0.96698874, 0.25481918, 0.9373383, -0.08878423, 0.33691862, 0, 0, 0)
 script = ExtResource("10_ic0uy")
 priority = 10
 look_at_mode = 2

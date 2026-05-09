@@ -22,3 +22,4 @@ func _ready() -> void:
 func _end_intro() -> void:
 	if intro_camera:
 		intro_camera.set("priority", 0)
+	History.action_performed.emit()

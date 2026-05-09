@@ -30,7 +30,7 @@ func _deselect_player():
 
 	target_player = null
 	selection_changed.emit(null)
-	
+
 func rope_broken(rope: Rope):
 	print('Rope broke, game over')
 	emit_signal("game_over")
@@ -48,7 +48,7 @@ func _target_is_reachable(player: Player, target: Node3D):
 
 	if abs_distance_to_target.y == 1 and abs_distance_to_target.x + abs_distance_to_target.z > 1:
 		return false
-	
+
 	if target is Player:
 		player.player_has_space_detector.global_position = target.target_position + Vector3.UP
 	else:
@@ -75,7 +75,10 @@ func _target_is_reachable(player: Player, target: Node3D):
 func can_player_move_to_tile(player: Player, tile: RockBase):
 	if is_game_over:
 		return false
-	
+
+	if !tile.is_available():
+		return false
+
 	if not tile.can_stand or player.is_grabbing:
 		return false
 
@@ -90,12 +93,16 @@ func can_player_move_to_tile(player: Player, tile: RockBase):
 func can_player_grab_tile(player: Player, tile: RockBase, normal: Vector3):
 	if is_game_over:
 		return false
-			
+	if !tile.is_available():
+		return false
+
 	var distance = tile.global_position + normal - player.global_position
 	return distance.length() < 0.4
 
 func can_player_jump_off_tile(player: Player, tile: RockBase, normal: Vector3):
 	if is_game_over:
+		return false
+	if !tile.is_available():
 		return false
 	if !player.is_fixed or player.is_grabbing or player.player_below != null:
 		return false
@@ -104,7 +111,7 @@ func can_player_jump_off_tile(player: Player, tile: RockBase, normal: Vector3):
 func can_player_stack_onto_player(stacking_player: Player, base_player: Player):
 	if is_game_over:
 		return false
-	
+
 	return stacking_player != base_player and base_player.is_fixed and _target_is_reachable(stacking_player, base_player)
 
 func snapshot() -> Variant:
@@ -112,7 +119,7 @@ func snapshot() -> Variant:
 		"target_player": target_player,
 		"is_game_over": is_game_over
 	}
-	
+
 func restore_from_snapshot(data: Variant):
 	is_game_over = data.is_game_over
 	_select_player(data.target_player)
