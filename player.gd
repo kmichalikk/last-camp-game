@@ -63,7 +63,7 @@ func _snap_to_floor_if_possible(body: Node3D) -> bool:
 		return true
 	return false
 
-func stand_on(target: Node3D):
+func stand_on(target: Node3D, emit_history: bool = true):
 	if is_grabbing:
 		return
 
@@ -84,11 +84,12 @@ func stand_on(target: Node3D):
 
 	if (player_above != null):
 		if (!player_above.is_grabbing and GameState.can_player_stack_onto_player(player_above, self)):
-			player_above.stand_on(self)
+			player_above.stand_on(self, false)
 		else:
 			detach_player_above()
 	is_fixed = true
-	History.action_performed.emit()
+	if emit_history:
+		History.action_performed.emit()
 
 func detach_player_above():
 	if (player_above == null):
