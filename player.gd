@@ -131,6 +131,15 @@ func grab(block: RockBase, normal: Vector3) -> void:
 		is_fixed = true
 		History.action_performed.emit()
 
+func force_detach(block: RockBase) -> void:
+	if grabbed_block == block:
+		_end_grab()
+	elif standing_on == block:
+		standing_on = null
+		is_fixed = false
+		freeze = false
+		detach_player_above()
+
 func _end_grab() -> void:
 	var released_block = grabbed_block
 	var released_normal = grabbed_normal

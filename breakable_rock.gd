@@ -10,6 +10,7 @@ class_name BreakableRock
 
 var is_broken: bool = false
 var _break_tween: Tween
+var _interacting_players: Array[Player] = []
 
 func _ready() -> void:
 	super._ready()
@@ -19,10 +20,20 @@ func _ready() -> void:
 	if material:
 		mesh_instance.set_surface_override_material(0, material.duplicate())
 
-func on_player_stand_ended(_player: Player) -> void:
+func on_player_stand_started(player: Player) -> void:
+	if not _interacting_players.has(player):
+		_interacting_players.append(player)
+
+func on_player_stand_ended(player: Player) -> void:
+	_interacting_players.erase(player)
 	break_now()
 
-func on_player_grab_ended(_player: Player, _normal: Vector3) -> void:
+func on_player_grab_started(player: Player, _normal: Vector3) -> void:
+	if not _interacting_players.has(player):
+		_interacting_players.append(player)
+
+func on_player_grab_ended(player: Player, _normal: Vector3) -> void:
+	_interacting_players.erase(player)
 	break_now()
 
 func break_now() -> void:
@@ -30,6 +41,12 @@ func break_now() -> void:
 		return
 
 	is_broken = true
+
+	# Force all remaining players using this rock to detach and fall
+	var players_to_detach = _interacting_players.duplicate()
+	_interacting_players.clear()
+	for player in players_to_detach:
+		player.force_detach(self)
 
 	# Disable gameplay collision immediately
 	collision_layer = 0
@@ -56,13 +73,19 @@ func break_now() -> void:
 
 func snapshot() -> Variant:
 	var material = mesh_instance.get_surface_override_material(0) as StandardMaterial3D
+	var player_paths = []
+	for player in _interacting_players:
+		if is_instance_valid(player):
+			player_paths.append(player.get_path())
+
 	return {
 		"is_broken": is_broken,
 		"actions_enabled": actions_enabled,
 		"collision_layer": collision_layer,
 		"mesh_position": mesh_instance.position,
 		"mesh_visible": mesh_instance.visible,
-		"material_alpha": material.albedo_color.a if material else 1.0
+		"material_alpha": material.albedo_color.a if material else 1.0,
+		"interacting_players": player_paths
 	}
 
 func restore_from_snapshot(data: Variant):
@@ -74,6 +97,12 @@ func restore_from_snapshot(data: Variant):
 	collision_layer = data.collision_layer
 	mesh_instance.position = data.mesh_position
 	mesh_instance.visible = data.mesh_visible
+
+	_interacting_players.clear()
+	for path in data.get("interacting_players", []):
+		var node = get_node_or_null(path)
+		if node is Player:
+			_interacting_players.append(node)
 
 	var material = mesh_instance.get_surface_override_material(0) as StandardMaterial3D
 	if material:
