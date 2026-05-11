@@ -32,26 +32,25 @@ func _ready() -> void:
 	GameState.selection_changed.connect(_on_selection_changed)
 	material = StandardMaterial3D.new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color = Color(1, 1, 1, 0.5)
-	material.no_depth_test = true
+	material.albedo_color = Color(1, 1, 1, 0.1)
 	if can_stand:
 		_setup_stand_colliders()
 	if can_interact_north:
-		_setup_wall_interaction_action(Vector3(0.01, 1, 1), Vector3(0.56, 0, 0), &"tile_grab_north_highlight", &"tile_jump_off_north_highlight", Vector3(1, 0, 0))
+		_setup_wall_interaction_action(Vector3(0.08, 0.9, 0.9), Vector3(0.54, 0, 0), &"tile_grab_north_highlight", &"tile_jump_off_north_highlight", Vector3(1, 0, 0))
 	if can_interact_south:
-		_setup_wall_interaction_action(Vector3(0.01, 1, 1), Vector3(-0.56, 0, 0), &"tile_grab_south_highlight", &"tile_jump_off_south_highlight", Vector3(-1, 0, 0))
+		_setup_wall_interaction_action(Vector3(0.08, 0.9, 0.9), Vector3(-0.54, 0, 0), &"tile_grab_south_highlight", &"tile_jump_off_south_highlight", Vector3(-1, 0, 0))
 	if can_interact_east:
-		_setup_wall_interaction_action(Vector3(1, 1, 0.01), Vector3(0, 0, 0.56), &"tile_grab_east_highlight", &"tile_jump_off_east_highlight", Vector3(0, 0, 1))
+		_setup_wall_interaction_action(Vector3(0.9, 0.9, 0.08), Vector3(0, 0, 0.54), &"tile_grab_east_highlight", &"tile_jump_off_east_highlight", Vector3(0, 0, 1))
 	if can_interact_west:
-		_setup_wall_interaction_action(Vector3(1, 1, 0.01), Vector3(0, 0, -0.56), &"tile_grab_west_highlight", &"tile_jump_off_west_highlight", Vector3(0, 0, -1))
+		_setup_wall_interaction_action(Vector3(0.9, 0.9, 0.08), Vector3(0, 0, -0.54), &"tile_grab_west_highlight", &"tile_jump_off_west_highlight", Vector3(0, 0, -1))
 
 #region Stand action
 
 func _setup_stand_colliders():
-	tile_stand_highlight = _create_helper_mesh_instance(Vector3(1, 0.004, 1), Vector3(0, 0.504, 0))
+	tile_stand_highlight = _create_helper_mesh_instance(Vector3(0.9, 0.08, 0.9), Vector3(0, 0.54, 0))
 	var tile_stand_area = Area3D.new()
 	tile_stand_area.add_child(tile_stand_highlight)
-	tile_stand_area.add_child(_create_helper_collision_shape(Vector3(1, 0.01, 1), Vector3(0, 0.56, 0)))
+	tile_stand_area.add_child(_create_helper_collision_shape(Vector3(0.9, 0.08, 0.9), Vector3(0, 0.54, 0)))
 	tile_stand_area.mouse_entered.connect(Callable(self, &"_stand_mouse_enter"))
 	tile_stand_area.mouse_exited.connect(Callable(self, &"_stand_mouse_exit"))
 	tile_stand_area.input_event.connect(Callable(self, &"_stand_input_event"))
@@ -88,7 +87,8 @@ func _stand_mouse_exit() -> void:
 
 func _setup_wall_interaction_action(size: Vector3, position: Vector3, grab_target_mesh_var: StringName, jump_off_indicator_var: StringName, normal: Vector3):
 	self[grab_target_mesh_var] = _create_helper_mesh_instance(size, position)
-	self[jump_off_indicator_var] = _create_helper_sprite_instance(position)
+	self[jump_off_indicator_var] = _create_helper_sprite_instance(position, load("res://assets/jump.png"))
+	self[jump_off_indicator_var].scale = Vector3.ONE * 0.02
 	var tile_wall_interaction_area = Area3D.new()
 	tile_wall_interaction_area.add_child(self[grab_target_mesh_var])
 	tile_wall_interaction_area.add_child(self[jump_off_indicator_var])
@@ -147,11 +147,11 @@ func _create_helper_mesh_instance(size: Vector3, position: Vector3) -> MeshInsta
 	instance.visible = false
 	_highlight_nodes.push_back(instance)
 	return instance
-
-func _create_helper_sprite_instance(position: Vector3) -> Sprite3D:
+	
+func _create_helper_sprite_instance(position: Vector3, texture: Texture2D) -> Sprite3D:
 	var instance = Sprite3D.new()
 	instance.position = position
-	instance.texture = PlaceholderTexture2D.new()
+	instance.texture = texture
 	instance.no_depth_test = true
 	instance.billboard = true
 	instance.visible = false

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ddawamlyv4wii"]
 
 [ext_resource type="Script" uid="uid://creobtyyr8eyd" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="Texture2D" uid="uid://cpfnxen6x35f8" path="res://assets/grab.png" id="2_onrkg"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_4flbx"]
 radius = 0.45
@@ -20,8 +21,6 @@ radius = 0.4
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_onrkg"]
 transparency = 1
 albedo_color = Color(0.28627452, 0.5568628, 1, 0.3137255)
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4flbx"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4flbx"]
 
@@ -59,12 +58,13 @@ radius = 0.4
 height = 0.009
 
 [node name="GrabIndicator" type="Sprite3D" parent="." unique_id=705586728]
+transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
 top_level = true
 visible = false
 pixel_size = 0.4076
 billboard = 1
 no_depth_test = true
-texture = SubResource("PlaceholderTexture2D_4flbx")
+texture = ExtResource("2_onrkg")
 
 [node name="PlayerHasSpaceDetector" type="ShapeCast3D" parent="." unique_id=1473467733]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)

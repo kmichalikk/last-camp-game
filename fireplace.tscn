@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c4yb7w7icoofv"]
+
+[ext_resource type="PackedScene" uid="uid://b0cge25nduisd" path="res://assets/fireplace.glb" id="1_0dsgr"]
+[ext_resource type="Script" uid="uid://chcves7rvf7ov" path="res://assets/fireplace.gd" id="2_3f88f"]
+
+[node name="Fireplace" type="Node3D" unique_id=1875510113]
+
+[node name="fireplace" parent="." unique_id=679172617 instance=ExtResource("1_0dsgr")]
+transform = Transform3D(-1.4901161e-08, 0, 0.14999999, 0, 0.14999996, 0, -0.14999999, 0, -1.4901161e-08, 0, 0, 0)
+script = ExtResource("2_3f88f")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="fireplace" unique_id=52755661]
+transform = Transform3D(6.666667, 0, 5.684342e-14, 0, 6.666668, 0, -5.684342e-14, 0, 6.666667, 0, 6.666668, 0)
+light_color = Color(0.89, 0.787205, 0.59629995, 1)
+omni_range = 6.0
