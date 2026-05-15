@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdmc522u75iqd"
-path.s3tc="res://.godot/imported/starting_world_texture.png-603828d63d11e3fa08be5a09b5fa28a7.s3tc.ctex"
+uid="uid://cgs6qsla2pl6n"
+path.s3tc="res://.godot/imported/world_1_texture.png-dcc51d72ceada5fe6d9e63b718dd72f3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "fa0bf99fb8de26df39db29a7824d975a"
+"md5": "0fc814c55717aa4b718adff336706cad"
 }
 
 [deps]
 
-source_file="res://assets/starting_world_texture.png"
-dest_files=["res://.godot/imported/starting_world_texture.png-603828d63d11e3fa08be5a09b5fa28a7.s3tc.ctex"]
+source_file="res://assets/world_1_texture.png"
+dest_files=["res://.godot/imported/world_1_texture.png-dcc51d72ceada5fe6d9e63b718dd72f3.s3tc.ctex"]
 
 [params]
 

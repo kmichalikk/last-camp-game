@@ -1,23 +1,23 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://coc72lhq3all0"]
 
-[ext_resource type="Script" path="res://breakable_rock.gd" id="1_breakable"]
+[ext_resource type="Script" uid="uid://b7xnxm6ovduyt" path="res://breakable_rock.gd" id="1_breakable"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_breakable"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_breakable"]
 transparency = 1
-albedo_color = Color(0.6, 0.4, 0.2, 1)
+albedo_color = Color(0.4087456, 0.40401286, 0.35161403, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_breakable"]
 material = SubResource("StandardMaterial3D_breakable")
 
-[node name="BreakableRock" type="StaticBody3D"]
+[node name="BreakableRock" type="StaticBody3D" unique_id=2024787273]
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_breakable")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=27521604]
 shape = SubResource("BoxShape3D_breakable")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2072089605]
 mesh = SubResource("BoxMesh_breakable")

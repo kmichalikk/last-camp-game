@@ -121,8 +121,9 @@ func grab(block: RockBase, normal: Vector3) -> void:
 			player_below = null
 
 		grab_indicator.visible = true
-
-		_move_to_position_smoothly(block.global_position + normal)
+		
+		target_position = block.global_position + normal
+		_move_to_position_smoothly(target_position)
 
 		grabbed_block = block
 		grabbed_normal = normal
