@@ -236,7 +236,8 @@ func snapshot() -> Variant:
 		"grabbed_normal": grabbed_normal,
 		"is_grabbing": is_grabbing,
 		"is_fixed": is_fixed,
-		"global_transform": global_transform
+		"global_transform": global_transform,
+		"target_position": target_position,
 	}
 
 func restore_from_snapshot(data: Variant):
@@ -250,3 +251,4 @@ func restore_from_snapshot(data: Variant):
 	is_fixed = data.is_fixed
 	freeze = is_fixed
 	global_transform = data.global_transform
+	target_position = target_position
