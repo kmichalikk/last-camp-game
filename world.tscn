@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://b7wi70wotb3d6" path="res://assets/world_1.glb" id="13_2u3nc"]
 [ext_resource type="PackedScene" uid="uid://tb54hfloqbc8" path="res://assets/world_2.glb" id="14_udxuc"]
 [ext_resource type="PackedScene" uid="uid://c7vt11iispvtg" path="res://assets/flag.glb" id="17_udxuc"]
+[ext_resource type="PackedScene" uid="uid://bkwtkrqmvv6vy" path="res://ui.tscn" id="18_ikiii"]
 [ext_resource type="PackedScene" uid="uid://coc72lhq3all0" path="res://breakable_rock.tscn" id="breakable_rock_res"]
 
 [sub_resource type="Curve3D" id="Curve3D_wse8f"]
@@ -45,6 +46,9 @@ ambient_light_color = Color(0.8302516, 0.8657459, 0.9435867, 1)
 ambient_light_sky_contribution = 0.1
 ambient_light_energy = 0.1
 reflected_light_source = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_udxuc"]
+size = Vector3(6.5, 12, 6.5)
 
 [node name="World" type="Node3D" unique_id=2081898281]
 script = ExtResource("1_wse8f")
@@ -5176,3 +5180,17 @@ omni_range = 12.0
 
 [node name="flag" parent="." unique_id=1558718082 instance=ExtResource("17_udxuc")]
 transform = Transform3D(0.21213202, 0, -0.21213202, 0, 0.29999998, 0, 0.21213202, 0, 0.21213202, -30.521147, 14.588094, 18.5082)
+
+[node name="WinArea" type="Area3D" parent="flag" unique_id=1193329418]
+collision_layer = 0
+collision_mask = 2
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="flag/WinArea" unique_id=1025157471]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 5.669998, 0)
+shape = SubResource("BoxShape3D_udxuc")
+
+[node name="UI" parent="." unique_id=213544512 instance=ExtResource("18_ikiii")]
+
+[connection signal="body_entered" from="flag/WinArea" to="." method="_on_win_area_body_entered"]
+[connection signal="body_exited" from="flag/WinArea" to="." method="_on_win_area_body_exited"]

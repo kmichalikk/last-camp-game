@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://bkwtkrqmvv6vy"]
+
+[ext_resource type="Shader" uid="uid://b8opf6ju2hrjx" path="res://ui.gdshader" id="1_fyqef"]
+[ext_resource type="Script" uid="uid://6b6xbxdqhjh0" path="res://ui.gd" id="1_m6e0p"]
+[ext_resource type="FontFile" uid="uid://brfhv0aalmh1i" path="res://KumarOne-Regular.ttf" id="3_27fn8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m6e0p"]
+shader = ExtResource("1_fyqef")
+shader_parameter/blur_amount = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_27fn8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nltto"]
+
+[node name="UI" type="CanvasLayer" unique_id=213544512]
+script = ExtResource("1_m6e0p")
+
+[node name="Blur" type="ColorRect" parent="." unique_id=1584549741]
+material = SubResource("ShaderMaterial_m6e0p")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainMenu" type="Control" parent="." unique_id=222218780]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="MainMenu" unique_id=1138196891]
+layout_mode = 1
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 1169.0
+offset_bottom = 319.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 123
+theme_override_styles/normal = SubResource("StyleBoxEmpty_27fn8")
+text = "The Last Camp"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayButton" type="Button" parent="MainMenu" unique_id=46506865]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = -185.0
+offset_right = 331.0
+offset_bottom = -102.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 42
+text = "Play"
+
+[node name="WinScreen" type="Control" parent="." unique_id=2025368961]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="WinScreen" unique_id=522658332]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -617.5
+offset_top = -72.5
+offset_right = 617.5
+offset_bottom = 72.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 81
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nltto")
+text = "You reached the summit!"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="MainMenu/PlayButton" to="." method="_on_play_button_pressed"]
