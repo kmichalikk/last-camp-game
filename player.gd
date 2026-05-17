@@ -121,8 +121,9 @@ func grab(block: RockBase, normal: Vector3) -> void:
 			player_below = null
 
 		grab_indicator.visible = true
-
-		_move_to_position_smoothly(block.global_position + normal)
+		
+		target_position = block.global_position + normal
+		_move_to_position_smoothly(target_position)
 
 		grabbed_block = block
 		grabbed_normal = normal
@@ -235,7 +236,8 @@ func snapshot() -> Variant:
 		"grabbed_normal": grabbed_normal,
 		"is_grabbing": is_grabbing,
 		"is_fixed": is_fixed,
-		"global_transform": global_transform
+		"global_transform": global_transform,
+		"target_position": target_position,
 	}
 
 func restore_from_snapshot(data: Variant):
@@ -249,3 +251,4 @@ func restore_from_snapshot(data: Variant):
 	is_fixed = data.is_fixed
 	freeze = is_fixed
 	global_transform = data.global_transform
+	target_position = target_position
