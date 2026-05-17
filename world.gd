@@ -8,6 +8,8 @@ extends Node3D
 
 @onready var ui = $UI
 
+var players_at_summit: int = 0
+
 func _ready() -> void:
 	ui.play_pressed.connect(_start_intro)
 
@@ -31,4 +33,13 @@ func _end_intro() -> void:
 
 func _on_win_area_body_entered(body: Node3D) -> void:
 	if body is Player:
+		players_at_summit += 1
+		_check_win_condition()
+
+func _on_win_area_body_exited(body: Node3D) -> void:
+	if body is Player:
+		players_at_summit -= 1
+
+func _check_win_condition():
+	if players_at_summit == 3:
 		ui.show_win()
