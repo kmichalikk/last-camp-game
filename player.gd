@@ -30,6 +30,8 @@ var target_position: Vector3 = Vector3.ZERO
 func _ready() -> void:
 	add_to_group("history")
 
+	target_position = global_position
+
 	material.albedo_color = player_color
 	material.emission = player_color
 	material.emission_enabled = false
@@ -121,7 +123,7 @@ func grab(block: RockBase, normal: Vector3) -> void:
 			player_below = null
 
 		grab_indicator.visible = true
-		
+
 		target_position = block.global_position + normal
 		_move_to_position_smoothly(target_position)
 
@@ -159,7 +161,8 @@ func jump_off(tile: Node3D, normal: Vector3) -> void:
 	if is_grabbing or !is_fixed or player_below != null:
 		return
 
-	_move_to_position_smoothly(tile.global_position + normal + 0.5 * Vector3.UP)
+	target_position = tile.global_position + normal + 0.5 * Vector3.UP
+	_move_to_position_smoothly(target_position)
 	await _move_tween.finished
 
 	if standing_on != null:
@@ -241,6 +244,9 @@ func snapshot() -> Variant:
 	}
 
 func restore_from_snapshot(data: Variant):
+	if _move_tween and _move_tween.is_valid():
+		_move_tween.kill()
+
 	player_above = data.player_above
 	player_below = data.player_below
 	standing_on = data.standing_on
@@ -251,4 +257,4 @@ func restore_from_snapshot(data: Variant):
 	is_fixed = data.is_fixed
 	freeze = is_fixed
 	global_transform = data.global_transform
-	target_position = target_position
+	target_position = data.target_position
