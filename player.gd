@@ -44,6 +44,14 @@ func _ready() -> void:
 	stack_highlight.mouse_exited.connect(_on_player_stack_highlight_mouse_exited)
 	stack_highlight.input_event.connect(_on_player_stack_highlight_input_event)
 
+	# Check for initial floor snap
+	_check_initial_snap.call_deferred()
+
+func _check_initial_snap() -> void:
+	for body in snap_to_floor_detector.get_overlapping_bodies():
+		if _snap_to_floor_if_possible(body):
+			return
+
 func _process(delta: float) -> void:
 	grab_indicator.position = self.global_position
 
@@ -246,6 +254,9 @@ func snapshot() -> Variant:
 func restore_from_snapshot(data: Variant):
 	if _move_tween and _move_tween.is_valid():
 		_move_tween.kill()
+
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
 
 	player_above = data.player_above
 	player_below = data.player_below

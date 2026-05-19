@@ -26,6 +26,9 @@ func _input(event: InputEvent) -> void:
 		undo_one()
 
 func _on_action_performed():
+	if _snapshot_timer.time_left > 0:
+		_take_snapshot()
+
 	_should_undo_current_state_first = false
 	_snapshot_timer.start()
 
