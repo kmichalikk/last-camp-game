@@ -3,12 +3,26 @@
 [ext_resource type="Shader" uid="uid://b8opf6ju2hrjx" path="res://ui.gdshader" id="1_fyqef"]
 [ext_resource type="Script" uid="uid://6b6xbxdqhjh0" path="res://ui.gd" id="1_m6e0p"]
 [ext_resource type="FontFile" uid="uid://brfhv0aalmh1i" path="res://KumarOne-Regular.ttf" id="3_27fn8"]
+[ext_resource type="Texture2D" uid="uid://g83q0f5jcofr" path="res://assets/cursor.svg" id="4_cursor"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m6e0p"]
 shader = ExtResource("1_fyqef")
 shader_parameter/blur_amount = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_27fn8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_key"]
+draw_center = true
+bg_color = Color(0, 0, 0, 0.4)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nltto"]
 
@@ -46,6 +60,225 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_27fn8")
 text = "The Last Camp"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Instructions" type="VBoxContainer" parent="MainMenu"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 100.0
+offset_top = -150.0
+offset_right = 1100.0
+offset_bottom = 250.0
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="Intro" type="Label" parent="MainMenu/Instructions"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "Take control of 3 alpinists tied together with
+climbing rope and a common goal of reaching the summit."
+
+[node name="ActionRow" type="HBoxContainer" parent="MainMenu/Instructions"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Click" type="Label" parent="MainMenu/Instructions/ActionRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "Click"
+
+[node name="Cursor1Container" type="Control" parent="MainMenu/Instructions/ActionRow"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+
+[node name="Shadow" type="TextureRect" parent="MainMenu/Instructions/ActionRow/Cursor1Container"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_cursor")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Main" type="TextureRect" parent="MainMenu/Instructions/ActionRow/Cursor1Container"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_cursor")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OnAlpinist" type="Label" parent="MainMenu/Instructions/ActionRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "on the alpinist to select, then click"
+
+[node name="Cursor2Container" type="Control" parent="MainMenu/Instructions/ActionRow"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+
+[node name="Shadow" type="TextureRect" parent="MainMenu/Instructions/ActionRow/Cursor2Container"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_cursor")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Main" type="TextureRect" parent="MainMenu/Instructions/ActionRow/Cursor2Container"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_cursor")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ToMove" type="Label" parent="MainMenu/Instructions/ActionRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "on a tile to move."
+
+[node name="CameraRow" type="HBoxContainer" parent="MainMenu/Instructions"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Use" type="Label" parent="MainMenu/Instructions/CameraRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "Use"
+
+[node name="KeyA" type="PanelContainer" parent="MainMenu/Instructions/CameraRow"]
+custom_minimum_size = Vector2(65, 50)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_key")
+
+[node name="Label" type="Label" parent="MainMenu/Instructions/CameraRow/KeyA"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="And" type="Label" parent="MainMenu/Instructions/CameraRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "and"
+
+[node name="KeyD" type="PanelContainer" parent="MainMenu/Instructions/CameraRow"]
+custom_minimum_size = Vector2(65, 50)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_key")
+
+[node name="Label" type="Label" parent="MainMenu/Instructions/CameraRow/KeyD"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "D"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToRotate" type="Label" parent="MainMenu/Instructions/CameraRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "to rotate the camera."
+
+[node name="UndoRow" type="HBoxContainer" parent="MainMenu/Instructions"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Press" type="Label" parent="MainMenu/Instructions/UndoRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "Press"
+
+[node name="KeyZ" type="PanelContainer" parent="MainMenu/Instructions/UndoRow"]
+custom_minimum_size = Vector2(65, 50)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_key")
+
+[node name="Label" type="Label" parent="MainMenu/Instructions/UndoRow/KeyZ"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "Z"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToUndo" type="Label" parent="MainMenu/Instructions/UndoRow"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_27fn8")
+theme_override_font_sizes/font_size = 32
+text = "to undo."
 
 [node name="PlayButton" type="Button" parent="MainMenu" unique_id=46506865]
 layout_mode = 1
