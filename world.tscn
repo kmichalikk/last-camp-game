@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://tb54hfloqbc8" path="res://assets/world_2.glb" id="14_udxuc"]
 [ext_resource type="PackedScene" uid="uid://c7vt11iispvtg" path="res://assets/flag.glb" id="17_udxuc"]
 [ext_resource type="PackedScene" uid="uid://bkwtkrqmvv6vy" path="res://ui.tscn" id="18_ikiii"]
+[ext_resource type="PackedScene" uid="uid://bowyn5ppyfei1" path="res://assets/arrow.glb" id="19_cbp6q"]
 [ext_resource type="PackedScene" uid="uid://coc72lhq3all0" path="res://breakable_rock.tscn" id="breakable_rock_res"]
 
 [sub_resource type="Curve3D" id="Curve3D_wse8f"]
@@ -5191,6 +5192,15 @@ transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70
 shape = SubResource("BoxShape3D_udxuc")
 
 [node name="UI" parent="." unique_id=213544512 instance=ExtResource("18_ikiii")]
+
+[node name="arrow2" parent="." unique_id=1022768640 instance=ExtResource("19_cbp6q")]
+transform = Transform3D(0.46692145, 0, 0.17884175, 0, 0.5, 0, -0.17884175, 0, 0.46692145, -8.496103, 1.7555867, 3.505054)
+
+[node name="arrow4" parent="." unique_id=1919190014 instance=ExtResource("19_cbp6q")]
+transform = Transform3D(-0.31122875, 0.10766594, 0.3762243, -0.04786525, 0.46662027, -0.1731312, -0.38838845, -0.14378296, -0.2801444, -34.55661, 2.7609715, 15.515268)
+
+[node name="arrow3" parent="." unique_id=824805267 instance=ExtResource("19_cbp6q")]
+transform = Transform3D(0.41371387, -0.2333473, -0.15617268, 0.19954002, 0.04867655, 0.45586663, -0.1975466, -0.43952203, 0.13340056, -12.82366, 1.2065271, -0.66294676)
 
 [connection signal="body_entered" from="flag/WinArea" to="." method="_on_win_area_body_entered"]
 [connection signal="body_exited" from="flag/WinArea" to="." method="_on_win_area_body_exited"]
