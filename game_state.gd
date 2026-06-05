@@ -111,8 +111,9 @@ func can_player_jump_off_tile(player: Player, tile: RockBase, normal: Vector3):
 func can_player_stack_onto_player(stacking_player: Player, base_player: Player):
 	if is_game_over:
 		return false
-
-	return stacking_player != base_player and base_player.is_fixed and _target_is_reachable(stacking_player, base_player)
+	
+	var has_other_player = base_player.player_above != null and base_player.player_above != stacking_player
+	return stacking_player != base_player and base_player.is_fixed and not has_other_player and _target_is_reachable(stacking_player, base_player)
 
 func snapshot() -> Variant:
 	return {
